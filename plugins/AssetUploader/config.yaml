@@ -1,0 +1,10 @@
+id: AssetUploader
+name: AssetUploader
+version: 1.0.0
+author_link: http://www.movabletype.org/
+author_name: Six Apart Ltd.
+
+applications:
+  cms:
+    callbacks:
+      template_param.header: $AssetUploader::MT::Plugin::AssetUploader::App::CMS::template_param_header

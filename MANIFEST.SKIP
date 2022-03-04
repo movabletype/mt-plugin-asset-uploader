@@ -1,0 +1,54 @@
+# version control
+\bCVS
+(^|/)\.
+
+# CPAN chain files
+^MANIFEST
+^Makefile
+^META.yml$
+^MYMETA.yml$
+^MYMETA.json$
+^blib/
+
+# Artwork data for description
+^artwork/
+
+# Raw source file
+^src/
+
+# Build tools
+Gruntfile
+package.json
+package-lock.json
+tsconfig.json
+webpack.config.js
+rollup.config.ts
+i18next-parser.config.js
+^tools/
+
+# npm working directory
+node_modules/
+
+# packages
+\.zip$
+\.tar\.gz$
+
+# Github pages
+^docs/
+
+# test
+^t/
+^cypress.json
+^cypress/
+
+# source files
+mt-static/plugins/movabletype/
+mt-static/plugins/AssetUploader/src/
+mt-static/plugins/AssetUploader/public/(?!build)
+
+# test
+plugins/AssetUploader/t/
+plugins/AssetUploader/xt/
+
+# distribution files and directories
+^AssetUploader
