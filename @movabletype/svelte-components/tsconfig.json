@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "types": ["@movabletype/app"],
+  },
+  "include": ["src/**/*.ts", "src/**/*.svelte"],
+}

@@ -1,0 +1,37 @@
+{
+  "name": "@movabletype/svelte-components",
+  "version": "1.0.0",
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "svelte": "./dist/index.js",
+  "scripts": {
+    "build": "svelte-package --input ./src",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "prettier --check . && eslint .",
+    "format:fix": "prettier --write --cache --cache-strategy metadata ."
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "svelte": "./dist/index.js",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "devDependencies": {
+    "@movabletype/app": "../app",
+    "@sveltejs/package": "^2.3.1",
+    "@sveltejs/vite-plugin-svelte": "^3.1.1",
+    "eslint": "^9.4.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-svelte": "^2.39.0",
+    "prettier": "^3.2.5",
+    "prettier-plugin-svelte": "^3.2.3",
+    "typescript-eslint": "^8.0.0-alpha.20",
+    "vite": "^5.2.12"
+  }
+}
