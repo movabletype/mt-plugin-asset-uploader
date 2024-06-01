@@ -1,5 +1,5 @@
 if (
-  /^(edit-entry|edit-content-type-data)$/.test(
+  /^(edit-entry|edit-page|edit-content-type-data)$/.test(
     document.documentElement.dataset.screenId || ""
   )
 ) {

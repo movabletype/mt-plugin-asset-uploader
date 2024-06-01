@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import ModalContent from "../../movabletype/svelte/ModalContent.svelte";
-  import ComponentList from "../../movabletype/svelte/ComponentList.svelte";
+  import { ModalContent } from "@movabletype/svelte-components";
+  import { ComponentList } from "@movabletype/svelte-components";
 
   export let showUploadOptionsView;
   export let uploadOptions;
@@ -15,7 +15,7 @@
     });
   }
 
-  function onMessage(ev): void {
+  function onMessage(ev) {
     Object.assign(uploadOptions, ev.detail);
   }
 </script>
@@ -43,10 +43,7 @@
           </div>
           <div>
             <h3>画像の向きの修正</h3>
-            <input
-              type="checkbox"
-              bind:checked={uploadOptions.fixOrientation}
-            />
+            <input type="checkbox" bind:checked={uploadOptions.fixOrientation} />
           </div>
         </svelte:fragment>
       </ComponentList>

@@ -1,4 +1,4 @@
-/node_modules/
-/public/build/
-
+dist
+app-dist
+.svelte-kit
 .DS_Store

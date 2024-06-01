@@ -1,13 +1,12 @@
 <script lang="ts">
-  import { get_current_component } from "svelte/internal";
-
-  import Modal from "../../movabletype/svelte/Modal.svelte";
+  import { unmount } from "svelte";
+  import { Modal } from "@movabletype/svelte-components";
   import TableView from "./TableView.svelte";
   import { setAssetModalContext } from "./context";
 
-  let self = get_current_component();
-  function close(): void {
-    self.$destroy();
+  let self: Modal;
+  function close() {
+    unmount(self);
   }
 
   export let insert;
@@ -15,6 +14,6 @@
   setAssetModalContext({ insert, params });
 </script>
 
-<Modal on:close={close}>
+<Modal on:close={close} bind:this={self}>
   <TableView />
 </Modal>

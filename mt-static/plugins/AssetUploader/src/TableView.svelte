@@ -1,9 +1,6 @@
 <script lang="ts">
-  import type { Asset } from "./Asset";
-
-  import { MT } from "../../movabletype";
   import { onMount } from "svelte";
-  import ModalContent from "../../movabletype/svelte/ModalContent.svelte";
+  import { ModalContent } from "@movabletype/svelte-components";
   import UploadOptions from "./UploadOptions.svelte";
   import { getAssetModalContext } from "./context";
   import { fetchAssets } from "./util";
@@ -17,14 +14,14 @@
   let selectedIndex = 0;
 
   const { insert, params } = getAssetModalContext();
-  async function insertThenClose(): Promise<void> {
+  async function insertThenClose() {
     const res = insert(assets[selectedIndex], insertOptions);
     const promise = res instanceof Promise ? res : Promise.resolve();
     await promise;
     close();
   }
 
-  let assets: Asset[] = [];
+  let assets = [];
   onMount(async () => {
     const fetchParams = {};
     ["blog_id", "_type", "filter", "filter_val"].forEach((k) => {
@@ -36,20 +33,18 @@
   let fileInput: HTMLInputElement;
   onMount(() => {
     fileInput.addEventListener("change", async () => {
-      const uploadAssets = await MT.import("uploadAssets");
+      const uploadAssets = await window.MT.import("uploadAssets");
       const promiseList: Promise<Response>[] = uploadAssets({
         files: fileInput.files,
-        context: { blogId: Number(params.get("blog_id")) },
+        context: { blogId: params.get("blog_id") },
         options: uploadOptions,
         requestOptions: {
           onprogress: function (progressEvent: ProgressEvent) {
             if (progressEvent.lengthComputable) {
-              console.log(
-                Math.round((progressEvent.loaded * 100) / progressEvent.total)
-              );
+              console.log(Math.round((progressEvent.loaded * 100) / progressEvent.total));
             }
-          },
-        },
+          }
+        }
       });
       promiseList.forEach(async (p) => {
         const res = await p;
@@ -68,10 +63,8 @@
     <svelte:fragment slot="body">
       <div class="text-right">
         <input bind:this={fileInput} type="file" multiple class="d-none" />
-        <button
-          type="button"
-          class="btn btn-default"
-          on:click={() => fileInput.click()}>アップロード</button
+        <button type="button" class="btn btn-default" on:click={() => fileInput.click()}
+          >アップロード</button
         >
         <button
           type="button"

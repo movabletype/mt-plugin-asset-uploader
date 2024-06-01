@@ -1,10 +1,5 @@
-import type { Asset } from "./Asset";
-
 interface Context {
-  insert: (
-    asset: Asset,
-    insertOptions: Record<string, unknown>
-  ) => Promise<void> | void;
+  insert: (asset: Object, insertOptions: Object) => Promise<void> | void;
   params: URLSearchParams;
 }
 
