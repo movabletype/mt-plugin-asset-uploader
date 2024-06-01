@@ -4,7 +4,8 @@
 
 以下のように分かれています。
 
-* mt-static/plugins/movabletype : `MT.import` などのライブラリ
+* @movabletype/app : `MT.import` などのライブラリ
+* @movabletype/svelte-components : Svelte コンポーネント
 * mt-static/plugins/AssetUploader : 今回のモーダルウィンドウの実装用
 
 ### ビルド
