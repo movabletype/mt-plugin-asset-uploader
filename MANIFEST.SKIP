@@ -25,6 +25,8 @@ webpack.config.js
 rollup.config.ts
 i18next-parser.config.js
 ^tools/
+Dockerfile
+compose.yml
 
 # npm working directory
 node_modules/
@@ -42,9 +44,8 @@ node_modules/
 ^cypress/
 
 # source files
-mt-static/plugins/movabletype/
-mt-static/plugins/AssetUploader/src/
-mt-static/plugins/AssetUploader/public/(?!build)
+@movabletype/
+mt-static/plugins/AssetUploader/(?!dist|app-dist)
 
 # test
 plugins/AssetUploader/t/
