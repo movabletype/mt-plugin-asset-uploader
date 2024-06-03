@@ -15,7 +15,6 @@ export default defineConfig(({ mode }) => {
           name: "app",
           dir: "dist",
           entryFileNames: "[name].js",
-          assetFileNames: "[name].[ext]"
         }
       }
     },
