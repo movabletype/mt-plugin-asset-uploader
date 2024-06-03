@@ -7,7 +7,7 @@
   const dispatch = createEventDispatcher();
 
   export let open = true;
-  export let className = "";
+  export let size: "sm" | "lg" | "xl" = "lg";
   export let describedby = "";
   export let labelledby = "";
 
@@ -29,7 +29,7 @@
   setModalContext({
     closeModal() {
       open = false;
-    }
+    },
   });
 </script>
 
@@ -52,7 +52,7 @@
     transition:fade
   >
     <div
-      class="modal-dialog {className}"
+      class={`modal-dialog modal-${size}`}
       role="document"
       in:fly={{ y: -50, duration: 300 }}
       out:fly={{ y: -50, duration: 300, easing: quintOut }}

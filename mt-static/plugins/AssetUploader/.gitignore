@@ -1,4 +1,5 @@
 dist
 app-dist
+locales
 .svelte-kit
 .DS_Store

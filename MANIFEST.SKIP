@@ -45,7 +45,7 @@ node_modules/
 
 # source files
 @movabletype/
-mt-static/plugins/AssetUploader/(?!dist|app-dist)
+mt-static/plugins/AssetUploader/(?!dist|app-dist|locales)
 
 # test
 plugins/AssetUploader/t/

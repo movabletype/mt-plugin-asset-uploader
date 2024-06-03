@@ -15,11 +15,11 @@ declare global {
 }
 
 export function exportAll(): void {
-  ["uploadAssets", "sendHttpRequest", "getJSON", "Alert", "Logger"].forEach(
-    async (k) => {
-      const { resolve } = await window.MT.export(k);
-      const module = await import(`./${k}.js`);
-      resolve(module[k]);
-    }
-  );
+  const Apis = import.meta.glob("./api/*.ts");
+  Object.keys(Apis).forEach(async (filename) => {
+    const key = filename.match(/([^\/]+)\.ts$/)[1];
+    const { resolve } = await window.MT.export(key);
+    const module = await Apis[filename]();
+    resolve(module[key]);
+  });
 }

@@ -1,8 +1,9 @@
 <script lang="ts">
   import { unmount } from "svelte";
   import { Modal } from "@movabletype/svelte-components";
-  import TableView from "./TableView.svelte";
+  import SelectionPanel from "./SelectionPanel.svelte";
   import { setAssetModalContext } from "./context";
+  import Store from "./store";
 
   let self: Modal;
   function close() {
@@ -12,8 +13,12 @@
   export let insert;
   export let params: URLSearchParams;
   setAssetModalContext({ insert, params });
+
+  const store = new Store({
+    params
+  });
 </script>
 
 <Modal on:close={close} bind:this={self}>
-  <TableView />
+  <SelectionPanel {store} />
 </Modal>

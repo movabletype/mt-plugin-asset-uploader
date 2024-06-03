@@ -1,25 +1,23 @@
 import { mount } from "svelte";
+import { Asset } from "@movabletype/app/object";
 import AssetModal from "./AssetModal.svelte";
 
-function getInsertHtml(field) {
-  return (asset, options) => {
-    const html = `<img src=${asset.url} />`; // build html from options. Maybe you need to make a request to mt.cgi.
+function getInsertHtml(field: any) {
+  return (html: string) => {
     window.app?.insertHTML(html, field);
   };
 }
 
-function getInsertFieldAsset(field) {
-  return (asset, options) => {
-    const preview = `<a href="${asset.url}" target="_blank"><img src="${
-      asset.thumbnail_url || asset.thumbnail
-    }" alt="" /></a>`;
+function getInsertFieldAsset(field: any) {
+  return (asset: Asset) => {
+    const preview = `<a href="${asset.url}" target="_blank"><img src="${asset.thumbnail_url}" alt="" /></a>`;
     window.insertCustomFieldAsset("", field, preview);
   };
 }
 
 const modalOpen = window.jQuery.fn.mtModal.open;
-window.jQuery.fn.mtModal.open = async (...args: any[]) => {
-  const params = new URLSearchParams(args[0].replace(/.*?\?/, "").replace(/&amp;/g, "&"));
+window.jQuery.fn.mtModal.open = async (url, opts) => {
+  const params = new URLSearchParams(url.replace(/.*?\?/, "").replace(/&amp;/g, "&"));
   if (params.get("__mode") === "dialog_asset_modal") {
     mount(AssetModal, {
       target: document.body,
@@ -29,7 +27,7 @@ window.jQuery.fn.mtModal.open = async (...args: any[]) => {
       }
     });
   } else {
-    modalOpen(...args);
+    modalOpen(url, opts);
   }
 };
 

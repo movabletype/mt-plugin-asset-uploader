@@ -23,3 +23,9 @@
     <slot name="footer" />
   </div>
 </div>
+
+<style>
+  .modal-body {
+    max-height: 600px;
+  }
+</style>

@@ -3,7 +3,13 @@
     "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "node",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "types": [
+      "vite/client",
+      "jquery"
+    ],
   },
-  "include": ["src/**/*.ts"],
+  "include": [
+    "src/**/*.ts"
+  ],
 }

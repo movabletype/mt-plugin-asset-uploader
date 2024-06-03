@@ -1,5 +1,9 @@
+interface InsertMethod {
+  (asset: Object, insertOptions: Object): Promise<void> | void
+  (html: string): Promise<void> | void
+}
 interface Context {
-  insert: (asset: Object, insertOptions: Object) => Promise<void> | void;
+  insert: InsertMethod;
   params: URLSearchParams;
 }
 

@@ -28,7 +28,18 @@ npm-build:
 
 build-js: npm-install npm-build
 
-build: build-js
+build-locales:
+	mkdir -p mt-static/plugins/$(NAME)/locales
+	for f in plugins/$(NAME)/lib/MT/Plugin/$(NAME)/L10N/*.pm; do \
+        l=$$(basename $$f .pm); \
+        d=mt-static/plugins/$(NAME)/locales/$${l}.js; \
+        \
+        echo '(function() { var lexicon =' > $$d; \
+        perl -Iplugins/$(NAME)/lib -MJSON -e "BEGIN { package MT::Plugin::L10N { sub new {} } }; use MT::Plugin::$(NAME)::L10N::$$l; print(encode_json(\%MT::Plugin::$(NAME)::L10N::$$l::Lexicon))" >> $$d || exit 1; \
+        echo '; for (k in lexicon) { window.Lexicon[k] = lexicon[k] } })()' >> $$d; \
+    done
+
+build: build-js build-locales
 
 create_distdir:
 	$(RM_RF) $(DISTVNAME)

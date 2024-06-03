@@ -3,8 +3,29 @@ name: AssetUploader
 version: 1.0.0
 author_link: http://www.movabletype.org/
 author_name: Six Apart Ltd.
+l10n_class: MT::Plugin::AssetUploader::L10N
 
 applications:
   cms:
     callbacks:
       template_param.header: $AssetUploader::MT::Plugin::AssetUploader::App::CMS::template_param_header
+    methods:
+      asset_uploader_as_html: $AssetUploader::MT::Plugin::AssetUploader::App::CMS::as_html
+
+list_properties:
+  asset:
+    asset_uploader_blog_id:
+      display: none
+      html: $AssetUploader::MT::Plugin::AssetUploader::App::CMS::list_props_blog_id_html
+    asset_uploader_label:
+      display: none
+      html: $AssetUploader::MT::Plugin::AssetUploader::App::CMS::list_props_label_html
+    asset_uploader_description:
+      display: none
+      html: $AssetUploader::MT::Plugin::AssetUploader::App::CMS::list_props_description_html
+    asset_uploader_url:
+      display: none
+      html: $AssetUploader::MT::Plugin::AssetUploader::App::CMS::list_props_url_html
+    asset_uploader_thumbnail_url:
+      display: none
+      html: $AssetUploader::MT::Plugin::AssetUploader::App::CMS::list_props_thumbnail_url_html
