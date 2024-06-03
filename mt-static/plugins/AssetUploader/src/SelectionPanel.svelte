@@ -18,12 +18,6 @@
 
   const { insert, params } = getAssetModalContext();
   async function insertThenClose() {
-
-
-  // @ts-ignore
-  const func = await window.MT.import("uploadAssets");
-  console.log(func);
-
     const insertHtmls = await Promise.all(
       $selectedObjects.map(({ asset, alternativeText, caption }) =>
         asset.asHtml({
@@ -34,7 +28,7 @@
     );
     insert(insertHtmls.join(""));
 
-    // close();
+    close();
   }
 
   let fileInput: HTMLInputElement;

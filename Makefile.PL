@@ -17,14 +17,10 @@ WriteMakefile(
 sub MY::top_targets {
     << 'Makefile';
 npm-install:
-	for d in @movabletype/svelte-components @movabletype/app mt-static/plugins/AssetUploader; do \
-		( cd $$d && npm ci ); \
-	done
+	cd mt-static/plugins/AssetUploader && npm ci
 
 npm-build:
-	for d in @movabletype/svelte-components @movabletype/app mt-static/plugins/AssetUploader; do \
-		( cd $$d && npm run build ); \
-	done
+	cd mt-static/plugins/AssetUploader npm run build
 
 build-js: npm-install npm-build
 
@@ -49,12 +45,7 @@ create_distdir:
 distdir: create_distdir build
 	$(NOECHO) $(NOOP)
 
-remove-node_modules:
-	for d in @movabletype/svelte-components @movabletype/app; do \
-		( cd $$d && $(RM_RF) node_modules ); \
-	done
-
-manifest : build remove-node_modules
+manifest : build
 
 Makefile
 }

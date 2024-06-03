@@ -1,23 +1,27 @@
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import { defineConfig } from "vitest/config";
 
-export default defineConfig({
-  base: "./",
-  build: {
-    rollupOptions: {
-      input: ["src/bootstrap.ts", "src/main.ts"],
-      output: {
-        sourcemap: true,
-        format: "esm",
-        name: "app",
-        dir: "dist",
-        entryFileNames: "[name].js",
-        assetFileNames: "[name].[ext]",
+export default defineConfig(({ mode }) => {
+  const isProduction = mode === "production";
+
+  return {
+    base: "./",
+    build: {
+      rollupOptions: {
+        input: ["src/bootstrap.ts", "src/main.ts"],
+        output: {
+          sourcemap: !isProduction,
+          format: "esm",
+          name: "app",
+          dir: "dist",
+          entryFileNames: "[name].js",
+          assetFileNames: "[name].[ext]"
+        }
       }
+    },
+    plugins: [svelte()],
+    test: {
+      include: ["src/**/*.{test,spec}.{js,ts}"]
     }
-  },
-  plugins: [svelte()],
-  test: {
-    include: ["src/**/*.{test,spec}.{js,ts}"]
-  }
+  };
 });
