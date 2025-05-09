@@ -14,8 +14,8 @@
     "format": "prettier --write ."
   },
   "devDependencies": {
-    "@movabletype/app": "file:../../../../movabletype-frontend-framework/packages/app",
-    "@movabletype/svelte-components": "file:../../../../movabletype-frontend-framework/packages/svelte-components",
+    "@movabletype/app": "file:../../../@movabletype/movabletype-app-0.0.1.tgz",
+    "@movabletype/svelte-components": "file:../../../@movabletype/movabletype-svelte-components-0.0.4.tgz",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@types/eslint": "^9.6.1",
     "copyfiles": "^2.4.1",
