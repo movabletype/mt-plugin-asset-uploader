@@ -17,10 +17,10 @@ WriteMakefile(
 sub MY::top_targets {
     << 'Makefile';
 npm-install:
-	cd mt-static/plugins/AssetUploader && npm ci
+	cd mt-static/plugins/$(NAME) && npm ci
 
 npm-build:
-	cd mt-static/plugins/AssetUploader npm run build
+	cd mt-static/plugins/$(NAME) && npm run build
 
 build-js: npm-install npm-build
 
