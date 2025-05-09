@@ -14,7 +14,7 @@
     "format": "prettier --write ."
   },
   "devDependencies": {
-    "@movabletype/app": "../../../app.tgz",
+    "@movabletype/app": "../../../../movabletype-frontend-framework/packages/app",
     "@movabletype/svelte-components": "../../../svelte-components.tgz",
     "@sveltejs/vite-plugin-svelte": "^3.1.1",
     "@types/eslint": "^8.56.7",
