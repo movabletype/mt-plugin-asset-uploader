@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "copy:app": "cpx 'node_modules/@movabletype/app/dist/bundle/**/*' app-dist",
+    "copy:app": "copyfiles -f 'node_modules/@movabletype/app/dist/bundle/**/*' app-dist",
     "dev": "npm run copy:app && vite build --watch",
     "build": "npm run copy:app && rimraf dist && vite build",
     "preview": "vite preview",
@@ -18,7 +18,7 @@
     "@movabletype/svelte-components": "file:../../../../movabletype-frontend-framework/packages/svelte-components",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@types/eslint": "^9.6.1",
-    "cpx": "^1.5.0",
+    "copyfiles": "^2.4.1",
     "eslint": "^9.26.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-svelte": "^3.5.1",
