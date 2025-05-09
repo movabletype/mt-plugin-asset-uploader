@@ -10,7 +10,10 @@ interface AssetData {
   asset: Asset;
   alternativeText: string;
   caption: string;
+  uploadPromise?: ReturnType<MTAPIMap["uploadAssets"]>[0];
 }
+
+type UploadOptions = Parameters<MTAPIMap["uploadAssets"]>[0]["options"];
 
 export default class Store {
   status: "loading" | "loaded" | "error" = "loading";
@@ -65,10 +68,19 @@ export default class Store {
     });
   }
 
-  async load() {
+  search(searchText: string) {
+    this.load(searchText);
+  }
+
+  async load(searchText: string = "") {
+    const items = searchText ? [{ type: "file_name", args: { string: searchText, option: "contains" } }] : undefined;
+    
     this.status = "loading";
     const { count, objects: assets } = await Asset.load(
-      { blog_id: this.params.get("blog_id") || "" },
+      {
+        blog_id: this.params.get("blog_id") || "",
+        items
+      },
       { limit: 25 } // FIXME: limit
     );
     this.stash = assets.map((asset, i) => ({
@@ -83,6 +95,7 @@ export default class Store {
     this.totalCount = count;
     this.updateObjects();
     this.updatePagerData();
+    this.setSelectedObjects([]);
   }
 
   select(asset: AssetData) {
@@ -102,6 +115,66 @@ export default class Store {
     if (changed) {
       this.setSelectedObjects(selectedObjects);
       this.updateObjects();
+    }
+  }
+
+  async upload(files: FileList | null | undefined, options: UploadOptions) {
+    if (!files) {
+      return;
+    }
+
+    const uploadAssets = await window.MT.import("uploadAssets");
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const url = URL.createObjectURL(file);
+      const { width, height } = await new Promise<{ width: number; height: number }>((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
+        img.src = url;
+      });
+
+      const uploadPromise = uploadAssets({
+        files: [file],
+        context: { blogId: parseInt(this.params.get("blog_id")!) },
+        options,
+        requestOptions: {}
+      })[0];
+
+      const id = `upload-${Math.random().toString(36)}`;
+      this.stash.unshift({
+        id,
+        status: "loading",
+        selected: true,
+        asset: new Asset({
+          id: "",
+          blog_id: "",
+          label: file.name,
+          description: "",
+          width,
+          height,
+          url: URL.createObjectURL(file),
+          thumbnail_url: URL.createObjectURL(file)
+        }),
+        alternativeText: "",
+        caption: "",
+        uploadPromise
+      });
+
+      this.setSelectedObjects(this.stash.filter((data) => data.selected));
+      this.updateObjects();
+    }
+  }
+
+  static async getProcessedAsset(data: AssetData) {
+    if (data.uploadPromise) {
+      const res = await (await data.uploadPromise).json();
+      const asset = data.asset;
+      asset.id = res.result.asset.id;
+      asset.blog_id = res.result.asset.blog_id;
+      delete data.uploadPromise;
+      return asset;
+    } else {
+      return data.asset;
     }
   }
 }

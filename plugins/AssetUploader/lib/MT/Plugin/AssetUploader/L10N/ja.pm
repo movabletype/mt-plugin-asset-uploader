@@ -17,6 +17,8 @@ use vars qw( %Lexicon );
     'Insert (s)' => '挿入 (s)',
     'Insert'     => '挿入',
     'Cancel (x)' => 'キャンセル',
+    'Upload'     => 'アップロード',
+    'Search'     => '検索',
 );
 
 1;
