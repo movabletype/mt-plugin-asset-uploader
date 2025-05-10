@@ -1,0 +1,62 @@
+name: Build Plugin Package
+
+on:
+  push:
+    branches:
+      - "**/*"
+    tags:
+      - "v*"
+      - "*@v*"
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set variables
+        id: vars
+        run: |
+          echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Build docker image
+        run: docker build --build-arg NODE=22 -t mt-plugin-asset-uploader-builder .
+
+      - name: Update version string for this build
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        run: find . -name config.yaml -print0 | xargs -0 perl -i -pe 's/^(version:\s*\d.*)/$1+build-${{ steps.vars.outputs.sha_short }}/'
+
+      - name: Build plugin package
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/app -w /app mt-plugin-asset-uploader-builder \
+          bash -c 'perl Makefile.PL && make manifest && make build && make dist && make zipdist'
+
+      - name: Upload artifact
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: mt-plugin-AssetUploader-${{ steps.vars.outputs.sha_short }}
+          path: |
+            *.zip
+            *.tar.gz
+
+      - name: Upload package to GitHub Releases
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          files: |
+            *.zip
+            *.tar.gz
+
+      - name: Upload extenstion package to GitHub Releases
+        if: ${{ steps.vars.outputs.extension_name }}
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          make_latest: "false"
+          files: |
+            extensions/${{ steps.vars.outputs.extension_name }}/*.zip
+            extensions/${{ steps.vars.outputs.extension_name }}/*.tar.gz
