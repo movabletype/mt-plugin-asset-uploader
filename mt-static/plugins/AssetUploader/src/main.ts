@@ -16,7 +16,7 @@ function getInsertFieldAsset(field: any) {
 }
 
 const modalOpen = window.jQuery.fn.mtModal.open;
-window.jQuery.fn.mtModal.open = async (url, opts) => {
+window.jQuery.fn.mtModal.open = async (url: string, opts: any) => {
   const params = new URLSearchParams(url.replace(/.*?\?/, "").replace(/&amp;/g, "&"));
   if (params.get("__mode") === "dialog_asset_modal") {
     mount(AssetModal, {

@@ -20,7 +20,10 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [svelte()],
     test: {
-      include: ["src/**/*.{test,spec}.{js,ts}"]
-    }
+      environment: "jsdom",
+      globals: true,
+      watch: false,
+      include: ["src/**/*.test.ts"],
+    },
   };
 });

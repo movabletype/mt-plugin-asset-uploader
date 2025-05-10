@@ -1,4 +1,4 @@
-export async function fetchAssets(params) {
+export async function fetchAssets(params: Record<string, string>) {
   const body = new FormData();
   body.set("__mode", "dialog_list_asset");
   body.set("json", "1");
@@ -15,7 +15,7 @@ export async function fetchAssets(params) {
   const data = await res.json();
   const div = document.createElement("div");
   div.innerHTML = `<table>${data.html}</table>`;
-  return [...div.querySelectorAll<HTMLInputElement>(`input[type="hidden"]`)].map((input) =>
+  return Array.from(div.querySelectorAll<HTMLInputElement>(`input[type="hidden"]`)).map((input) =>
     JSON.parse(input.value)
   );
 }
