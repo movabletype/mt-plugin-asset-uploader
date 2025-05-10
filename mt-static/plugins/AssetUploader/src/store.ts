@@ -13,7 +13,7 @@ interface AssetData {
   uploadPromise?: ReturnType<MTAPIMap["uploadAssets"]>[0];
 }
 
-type UploadOptions = Parameters<MTAPIMap["uploadAssets"]>[0]["options"];
+export type UploadOptions = Parameters<MTAPIMap["uploadAssets"]>[0]["options"];
 
 export default class Store {
   status: "loading" | "loaded" | "error" = "loading";
@@ -85,7 +85,7 @@ export default class Store {
       },
       { limit: 25 } // FIXME: limit
     );
-    this.stash = assets.map((asset, i) => ({
+    this.stash = assets.map((asset) => ({
       id: asset.id,
       status: "loaded",
       selected: false,
@@ -102,7 +102,7 @@ export default class Store {
 
   select(asset: AssetData) {
     let changed = false;
-    let selectedObjects: AssetData[] = [];
+    const selectedObjects: AssetData[] = [];
     this.stash.forEach((data) => {
       const selected = data === asset ? !data.selected : this.multiSelect && data.selected;
       if (data.selected !== selected) {

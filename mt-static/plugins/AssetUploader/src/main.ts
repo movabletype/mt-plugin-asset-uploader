@@ -2,13 +2,13 @@ import { mount } from "svelte";
 import { Asset } from "@movabletype/app/object";
 import AssetModal from "./AssetModal.svelte";
 
-function getInsertHtml(field: any) {
+function getInsertHtml(field: string) {
   return (html: string) => {
     window.app?.insertHTML(html, field);
   };
 }
 
-function getInsertFieldAsset(field: any) {
+function getInsertFieldAsset(field: string) {
   return (asset: Asset) => {
     const preview = `<a href="${asset.url}" target="_blank"><img src="${asset.thumbnail_url}" alt="" /></a>`;
     window.insertCustomFieldAsset("", field, preview);
@@ -16,13 +16,13 @@ function getInsertFieldAsset(field: any) {
 }
 
 const modalOpen = window.jQuery.fn.mtModal.open;
-window.jQuery.fn.mtModal.open = async (url: string, opts: any) => {
+window.jQuery.fn.mtModal.open = async (url: string, opts: unknown) => {
   const params = new URLSearchParams(url.replace(/.*?\?/, "").replace(/&amp;/g, "&"));
   if (params.get("__mode") === "dialog_asset_modal") {
     mount(AssetModal, {
       target: document.body,
       props: {
-        insert: getInsertHtml(params.get("edit_field")),
+        insert: getInsertHtml(params.get("edit_field") as string),
         params
       }
     });
@@ -42,7 +42,7 @@ document.querySelectorAll<HTMLAnchorElement>(".mt-modal-open").forEach((elm) => 
     mount(AssetModal, {
       target: document.body,
       props: {
-        insert: getInsertFieldAsset(params.get("edit_field")),
+        insert: getInsertFieldAsset(params.get("edit_field") as string),
         params
       }
     });

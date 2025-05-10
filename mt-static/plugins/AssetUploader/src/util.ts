@@ -3,7 +3,7 @@ export async function fetchAssets(params: Record<string, string>) {
   body.set("__mode", "dialog_list_asset");
   body.set("json", "1");
 
-  for (let k in params) {
+  for (const k in params) {
     body.set(k, params[k]);
   }
 

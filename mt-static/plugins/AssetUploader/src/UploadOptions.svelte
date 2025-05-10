@@ -4,6 +4,7 @@
   import { ComponentList } from "@movabletype/svelte-components";
 
   export let showUploadOptionsView;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   export let uploadOptions: any;
   if (!uploadOptions) {
     onMount(async () => {

@@ -4,6 +4,7 @@
   import UploadOptions from "./UploadOptions.svelte";
   import { getAssetModalContext } from "./context";
   import Store from "./store";
+  import type { UploadOptions as StoreUploadOptions } from "./store";
 
   export let store: Store;
   let objects = store.objects;
@@ -16,12 +17,12 @@
     store.search(searchText);
   }
 
-  let close: any;
+  let close: (() => void) | undefined;
 
   let showUploadOptionsView = false;
-  let uploadOptions: any;
+  let uploadOptions: StoreUploadOptions;
 
-  const { insert, params } = getAssetModalContext();
+  const { insert } = getAssetModalContext();
   async function insertThenClose() {
     const insertHtmls = await Promise.all(
       $selectedObjects.map(async (data) => {
@@ -34,7 +35,7 @@
     );
     insert(insertHtmls.join(""));
 
-    close();
+    close?.();
   }
 
   let fileInput: HTMLInputElement;
@@ -127,7 +128,7 @@
             </div>
           </div>
           <div class="col-auto mt-asset-uploader-insert-options">
-            {#each $selectedObjects as asset}
+            {#each $selectedObjects as asset (asset.id)}
               <div>
                 <div class="row g-4">
                   <div class="col-6">
