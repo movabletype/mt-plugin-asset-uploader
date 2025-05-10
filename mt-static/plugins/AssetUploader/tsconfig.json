@@ -2,10 +2,7 @@
   "compilerOptions": {
     "module": "ES2020",
     "moduleResolution": "bundler",
-    "lib": [
-      "ES2020",
-      "DOM"
-    ],
+    "lib": ["ES2020", "DOM"],
     "allowJs": true,
     "checkJs": true,
     "esModuleInterop": true,
@@ -15,15 +12,8 @@
     "sourceMap": true,
     "strict": true,
     "rootDir": ".",
-    "types": [
-      "vitest/globals",
-      "@movabletype/app"
-    ]
+    "types": ["vitest/globals", "@movabletype/app"]
   },
-  "include": [
-    "./src/**/*.ts",
-  ],
-  "exclude": [
-    "./node_modules/**"
-  ]
+  "include": ["./src/**/*.ts"],
+  "exclude": ["./node_modules/**"]
 }

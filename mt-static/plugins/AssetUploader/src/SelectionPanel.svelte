@@ -109,7 +109,11 @@
             <div class="col-12">
               <div class="row d-flex flex-wrap">
                 {#each $objects as asset ((asset.selected, asset.id))}
-                  <a class="p-2 col-3 mt-asset-uploader-asset" on:click={() => store.select(asset)}>
+                  <a
+                    class="p-2 col-3 mt-asset-uploader-asset"
+                    on:click={() => store.select(asset)}
+                    aria-label={asset.asset.label}
+                  >
                     <img
                       src={asset.asset.thumbnail_url}
                       style={asset.selected ? "outline: 3px solid blue" : ""}
@@ -139,20 +143,33 @@
                   </div>
                 </div>
                 <div class="field field-content field-top-label mt-4">
-                  <label class="form-label">代替テキスト</label>
+                  <label class="form-label" for="asset-uploader-alternative-text"
+                    >代替テキスト</label
+                  >
                   <input
+                    id="asset-uploader-alternative-text"
                     type="text"
                     class="form-control text full"
                     bind:value={asset.alternativeText}
                   />
                 </div>
                 <div class="field field-content field-top-label mt-4">
-                  <label class="form-label">キャプション</label>
-                  <textarea class="form-control text full" rows="1" bind:value={asset.caption} />
+                  <label class="form-label" for="asset-uploader-caption">キャプション</label>
+                  <textarea
+                    id="asset-uploader-caption"
+                    class="form-control text full"
+                    rows="1"
+                    bind:value={asset.caption}
+                  ></textarea>
                 </div>
                 <div class="field field-content field-top-label mt-4">
-                  <label class="form-label">横幅</label>
-                  <textarea class="form-control text full" rows="1" bind:value={asset.caption} />
+                  <label class="form-label" for="asset-uploader-width">横幅</label>
+                  <textarea
+                    id="asset-uploader-width"
+                    class="form-control text full"
+                    rows="1"
+                    bind:value={asset.caption}
+                  ></textarea>
                 </div>
               </div>
             {/each}

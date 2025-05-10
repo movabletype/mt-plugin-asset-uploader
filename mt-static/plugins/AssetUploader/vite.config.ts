@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
           format: "esm",
           name: "app",
           dir: "dist",
-          entryFileNames: "[name].js",
+          entryFileNames: "[name].js"
         }
       }
     },
@@ -23,7 +23,7 @@ export default defineConfig(({ mode }) => {
       environment: "jsdom",
       globals: true,
       watch: false,
-      include: ["src/**/*.test.ts"],
-    },
+      include: ["src/**/*.test.ts"]
+    }
   };
 });

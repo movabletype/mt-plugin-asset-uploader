@@ -4,8 +4,8 @@ describe("fetchAssets", () => {
   it("should fetch assets", async () => {
     window.fetch = vi.fn().mockResolvedValue({
       json: vi.fn().mockResolvedValue({
-        assets: [],
-      }),
+        assets: []
+      })
     });
 
     const assets = await fetchAssets({});

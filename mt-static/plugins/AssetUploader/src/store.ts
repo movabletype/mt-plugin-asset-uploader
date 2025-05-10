@@ -73,8 +73,10 @@ export default class Store {
   }
 
   async load(searchText: string = "") {
-    const items = searchText ? [{ type: "file_name", args: { string: searchText, option: "contains" } }] : undefined;
-    
+    const items = searchText
+      ? [{ type: "file_name", args: { string: searchText, option: "contains" } }]
+      : undefined;
+
     this.status = "loading";
     const { count, objects: assets } = await Asset.load(
       {

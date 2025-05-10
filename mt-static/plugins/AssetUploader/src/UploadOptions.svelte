@@ -4,7 +4,7 @@
   import { ComponentList } from "@movabletype/svelte-components";
 
   export let showUploadOptionsView;
-  export let uploadOptions;
+  export let uploadOptions: any;
   if (!uploadOptions) {
     onMount(async () => {
       const defaultOptions = await new Promise((resolve) => {
@@ -15,7 +15,7 @@
     });
   }
 
-  function onMessage(ev) {
+  function onMessage(ev: CustomEvent) {
     Object.assign(uploadOptions, ev.detail);
   }
 </script>
@@ -34,7 +34,7 @@
       <ComponentList
         namespace="asset-upload-options.modal"
         detail={uploadOptions}
-        on:message={onMessage}
+        on:message={onMessage as (ev: Event) => void}
       >
         <svelte:fragment slot="prepend">
           <div>

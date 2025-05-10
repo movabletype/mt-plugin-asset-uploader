@@ -1,6 +1,6 @@
 interface InsertMethod {
-  (asset: Object, insertOptions: Object): Promise<void> | void
-  (html: string): Promise<void> | void
+  (asset: Object, insertOptions: Object): Promise<void> | void;
+  (html: string): Promise<void> | void;
 }
 interface Context {
   insert: InsertMethod;
