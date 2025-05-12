@@ -6,20 +6,27 @@
   import Store from "./store";
   import type { UploadOptions as StoreUploadOptions } from "./store";
 
-  export let store: Store;
+  let {
+    store
+  }: {
+    store: Store;
+  } = $props();
+
   let objects = store.objects;
   let selectedObjects = store.selectedObjects;
   let pagerData = store.pagerData;
-  let isDragging = false;
+  let isDragging = $state(false);
 
-  let searchText: string = "";
+  let searchText = $state("");
   function search() {
     store.search(searchText);
   }
 
+  // svelte-ignore non_reactive_update FIXME:
   let close: (() => void) | undefined;
 
-  let showUploadOptionsView = false;
+  let showUploadOptionsView = $state(false);
+  // svelte-ignore non_reactive_update
   let uploadOptions: StoreUploadOptions;
 
   const { insert } = getAssetModalContext();
@@ -38,6 +45,7 @@
     close?.();
   }
 
+  // svelte-ignore non_reactive_update
   let fileInput: HTMLInputElement;
   onMount(() => {
     fileInput.addEventListener("change", async () => {
@@ -65,7 +73,6 @@
 </script>
 
 {#if !showUploadOptionsView}
-  <!-- svelte-ignore a11y-missing-attribute -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <ModalContent bind:close>
@@ -74,15 +81,15 @@
       <div
         class="position-relative"
         class:mt-asset-uploader-dragging={isDragging}
-        on:dragover|preventDefault
-        on:dragenter={dragEnterHandler}
-        on:drop={dropHandler}
+        ondragover={(ev) => ev.preventDefault()}
+        ondragenter={dragEnterHandler}
+        ondrop={dropHandler}
       >
         <div class="row">
           <div class="col row">
             <div class="col-auto">
               <input bind:this={fileInput} type="file" multiple class="d-none" />
-              <button type="button" class="btn btn-default" on:click={() => fileInput.click()}
+              <button type="button" class="btn btn-default" onclick={() => fileInput.click()}
                 >{window.trans("Upload")}</button
               >
             </div>
@@ -90,7 +97,7 @@
               <input bind:value={searchText} type="search" class="form-control text" />
             </div>
             <div class="col-auto">
-              <button type="button" class="btn btn-primary" on:click={search}
+              <button type="button" class="btn btn-primary" onclick={search}
                 >{window.trans("Search")}</button
               >
             </div>
@@ -99,7 +106,7 @@
             <button
               type="button"
               class="btn btn-default"
-              on:click={() => {
+              onclick={() => {
                 showUploadOptionsView = true;
               }}>設定</button
             >
@@ -112,12 +119,14 @@
                 {#each $objects as asset ((asset.selected, asset.id))}
                   <a
                     class="p-2 col-3 mt-asset-uploader-asset"
-                    on:click={() => store.select(asset)}
+                    onclick={() => store.select(asset)}
                     aria-label={asset.asset.label}
+                    href={asset.asset.url}
                   >
                     <img
                       src={asset.asset.thumbnail_url}
-                      style={asset.selected ? "outline: 3px solid blue" : ""}
+                      class:selected={asset.selected}
+                      alt={asset.asset.label}
                     />
                   </a>
                 {/each}
@@ -132,7 +141,7 @@
               <div>
                 <div class="row g-4">
                   <div class="col-6">
-                    <img src={asset.asset.url} class="mw-100" />
+                    <img src={asset.asset.url} class="mw-100" alt={asset.asset.label} />
                   </div>
                   <div class="col-6">
                     <div>
@@ -183,7 +192,7 @@
         type="button"
         title={window.trans("Insert (s)")}
         class="action primary button btn btn-primary"
-        on:click={insertThenClose}
+        onclick={insertThenClose}
       >
         {window.trans("Insert")}
       </button>
@@ -191,7 +200,7 @@
         type="button"
         title={window.trans("Cancel (x)")}
         class="cancel action button mt-close-dialog btn btn-default"
-        on:click={close}
+        onclick={close}
       >
         {window.trans("Cancel")}
       </button>
@@ -229,6 +238,9 @@
     object-position: center center;
     width: 126px;
     height: 126px;
+  }
+  .mt-asset-uploader-asset img.selected {
+    outline: 3px solid #0176bf;
   }
   .mt-asset-uploader-insert-options {
     width: 245px;

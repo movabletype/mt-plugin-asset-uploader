@@ -10,6 +10,7 @@ interface AssetData {
   asset: Asset;
   alternativeText: string;
   caption: string;
+  width?: number;
   uploadPromise?: ReturnType<MTAPIMap["uploadAssets"]>[0];
 }
 

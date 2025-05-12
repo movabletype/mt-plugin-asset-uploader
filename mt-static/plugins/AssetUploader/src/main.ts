@@ -1,5 +1,4 @@
 import { mount } from "svelte";
-import { Asset } from "@movabletype/app/object";
 import AssetModal from "./AssetModal.svelte";
 
 function getInsertHtml(field: string) {
@@ -9,16 +8,15 @@ function getInsertHtml(field: string) {
 }
 
 function getInsertFieldAsset(field: string) {
-  return (asset: Asset) => {
-    const preview = `<a href="${asset.url}" target="_blank"><img src="${asset.thumbnail_url}" alt="" /></a>`;
-    window.insertCustomFieldAsset("", field, preview);
+  return (html: string) => {
+    window.insertCustomFieldAsset(html, field, html);
   };
 }
 
 const modalOpen = window.jQuery.fn.mtModal.open;
 window.jQuery.fn.mtModal.open = async (url: string, opts: unknown) => {
   const params = new URLSearchParams(url.replace(/.*?\?/, "").replace(/&amp;/g, "&"));
-  if (params.get("__mode") === "dialog_asset_modal") {
+  if (params.get("__mode") === "dialog_asset_modal" && params.get("filter_val") === "image") {
     mount(AssetModal, {
       target: document.body,
       props: {
@@ -39,12 +37,16 @@ document.querySelectorAll<HTMLAnchorElement>(".mt-modal-open").forEach((elm) => 
     ev.preventDefault();
 
     const params = new URLSearchParams(elm.href.replace(/.*?\?/, "").replace(/&amp;/g, "&"));
-    mount(AssetModal, {
-      target: document.body,
-      props: {
-        insert: getInsertFieldAsset(params.get("edit_field") as string),
-        params
-      }
-    });
+    if (params.get("filter_val") === "image") {
+      mount(AssetModal, {
+        target: document.body,
+        props: {
+          insert: getInsertFieldAsset(params.get("edit_field") as string),
+          params
+        }
+      });
+    } else {
+      modalOpen(elm.href, {});
+    }
   });
 });

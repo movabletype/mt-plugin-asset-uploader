@@ -3,15 +3,22 @@
   import { Modal } from "@movabletype/svelte-components";
   import SelectionPanel from "./SelectionPanel.svelte";
   import { setAssetModalContext } from "./context";
+  import type { InsertMethod } from "./context";
   import Store from "./store";
+
+  let {
+    insert,
+    params
+  }: {
+    insert: InsertMethod;
+    params: URLSearchParams;
+  } = $props();
 
   let self: Modal;
   function close() {
     unmount(self);
   }
 
-  export let insert;
-  export let params: URLSearchParams;
   setAssetModalContext({ insert, params });
 
   const store = new Store({
@@ -19,6 +26,6 @@
   });
 </script>
 
-<Modal on:close={close} bind:this={self}>
+<Modal size="lg" on:close={close} bind:this={self}>
   <SelectionPanel {store} />
 </Modal>

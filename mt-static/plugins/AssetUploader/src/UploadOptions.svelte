@@ -3,9 +3,15 @@
   import { ModalContent } from "@movabletype/svelte-components";
   import { ComponentList } from "@movabletype/svelte-components";
 
-  export let showUploadOptionsView;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  export let uploadOptions: any;
+  let {
+    showUploadOptionsView = $bindable(),
+    uploadOptions = $bindable()
+  }: {
+    showUploadOptionsView: boolean;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    uploadOptions: any;
+  } = $props();
+
   if (!uploadOptions) {
     onMount(async () => {
       const defaultOptions = await new Promise((resolve) => {
@@ -29,7 +35,7 @@
         <button
           type="button"
           class="btn btn-default"
-          on:click={() => (showUploadOptionsView = false)}>閉じる</button
+          onclick={() => (showUploadOptionsView = false)}>閉じる</button
         >
       </div>
       <ComponentList
