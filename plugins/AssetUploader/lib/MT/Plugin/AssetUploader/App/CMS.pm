@@ -34,6 +34,8 @@ sub as_html {
     $app->validate_param({
         blog_id => [qw/ID/],
         id      => [qw/ID/],
+        include => [qw/FLAG/],
+        enclose => [qw/FLAG/],
     }) or return;
 
     my $perms = $app->permissions
@@ -48,6 +50,10 @@ sub as_html {
     # TODO: TO BE IMPLEMENTED
     # $asset->on_upload();
     my %param = ();
+
+    $param{include} = $app->param('include') || 0;
+    $param{enclose} = $app->param('enclose') || 0;
+
     $asset->as_html(\%param);
 }
 

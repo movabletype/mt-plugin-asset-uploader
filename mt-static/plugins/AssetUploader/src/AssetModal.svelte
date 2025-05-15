@@ -1,3 +1,6 @@
+<script module>
+    export type { InitialSelectedAssetData } from "./store";
+</script>
 <script lang="ts">
   import { unmount } from "svelte";
   import { Modal } from "@movabletype/svelte-components";
@@ -5,13 +8,20 @@
   import { setAssetModalContext } from "./context";
   import type { InsertMethod } from "./context";
   import Store from "./store";
+  import type { InitialSelectedAssetData } from "./store";
 
   let {
     insert,
-    params
+    selectMetaData = false,
+    multiSelect = false,
+    params,
+    initialSelectedData
   }: {
     insert: InsertMethod;
+    selectMetaData?: boolean;
+    multiSelect?: boolean;
     params: URLSearchParams;
+    initialSelectedData?: InitialSelectedAssetData[];
   } = $props();
 
   let self: Modal;
@@ -22,10 +32,12 @@
   setAssetModalContext({ insert, params });
 
   const store = new Store({
-    params
+    multiSelect,
+    params,
+    initialSelectedData
   });
 </script>
 
 <Modal size="lg" on:close={close} bind:this={self}>
-  <SelectionPanel {store} />
+  <SelectionPanel {selectMetaData} {store} />
 </Modal>

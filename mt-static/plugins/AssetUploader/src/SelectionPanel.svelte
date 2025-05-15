@@ -7,9 +7,11 @@
   import type { UploadOptions as StoreUploadOptions } from "./store";
 
   let {
-    store
+    store,
+    selectMetaData
   }: {
     store: Store;
+    selectMetaData: boolean;
   } = $props();
 
   let objects = store.objects;
@@ -31,16 +33,13 @@
 
   const { insert } = getAssetModalContext();
   async function insertThenClose() {
-    const insertHtmls = await Promise.all(
-      $selectedObjects.map(async (data) => {
-        const asset = await Store.getProcessedAsset(data);
-        return asset.asHtml({
-          alternativeText: data.alternativeText,
-          caption: data.caption
-        });
-      })
+    const insertData = await Promise.all(
+      $selectedObjects.map(async (data) => ({
+        asset: await Store.getProcessedAsset(data),
+        insertOptions: data
+      }))
     );
-    insert(insertHtmls.join(""));
+    await insert(insertData);
 
     close?.();
   }
@@ -119,7 +118,10 @@
                 {#each $objects as asset ((asset.selected, asset.id))}
                   <a
                     class="p-2 col-3 mt-asset-uploader-asset"
-                    onclick={() => store.select(asset)}
+                    onclick={(ev) => {
+                      ev.preventDefault();
+                      store.select(asset);
+                    }}
                     aria-label={asset.asset.label}
                     href={asset.asset.url}
                   >
@@ -152,35 +154,38 @@
                     </div>
                   </div>
                 </div>
-                <div class="field field-content field-top-label mt-4">
-                  <label class="form-label" for="asset-uploader-alternative-text"
-                    >代替テキスト</label
-                  >
-                  <input
-                    id="asset-uploader-alternative-text"
-                    type="text"
-                    class="form-control text full"
-                    bind:value={asset.alternativeText}
-                  />
-                </div>
-                <div class="field field-content field-top-label mt-4">
-                  <label class="form-label" for="asset-uploader-caption">キャプション</label>
-                  <textarea
-                    id="asset-uploader-caption"
-                    class="form-control text full"
-                    rows="1"
-                    bind:value={asset.caption}
-                  ></textarea>
-                </div>
-                <div class="field field-content field-top-label mt-4">
-                  <label class="form-label" for="asset-uploader-width">横幅</label>
-                  <textarea
-                    id="asset-uploader-width"
-                    class="form-control text full"
-                    rows="1"
-                    bind:value={asset.caption}
-                  ></textarea>
-                </div>
+                {#if selectMetaData}
+                  <div class="field field-content field-top-label mt-4">
+                    <label class="form-label" for="asset-uploader-alternative-text"
+                      >代替テキスト</label
+                    >
+                    <input
+                      id="asset-uploader-alternative-text"
+                      type="text"
+                      class="form-control text full"
+                      bind:value={asset.alternativeText}
+                    />
+                  </div>
+                  <div class="field field-content field-top-label mt-4">
+                    <label class="form-label" for="asset-uploader-caption">キャプション</label>
+                    <textarea
+                      id="asset-uploader-caption"
+                      class="form-control text full"
+                      rows="1"
+                      bind:value={asset.caption}
+                    ></textarea>
+                  </div>
+                  <div class="field field-content field-top-label mt-4">
+                    <label class="form-label" for="asset-uploader-width">横幅</label>
+                    <select id="asset-uploader-width" class="form-control" bind:value={asset.width}>
+                      <option value="320">320</option>
+                      <option value="640">640</option>
+                      <option value="1024">1024</option>
+                      <option value="">Original size</option>
+                      <option value="specify">Specify</option>
+                    </select>
+                  </div>
+                {/if}
               </div>
             {/each}
           </div>
@@ -192,6 +197,7 @@
         type="button"
         title={window.trans("Insert (s)")}
         class="action primary button btn btn-primary"
+        disabled={$selectedObjects.length === 0}
         onclick={insertThenClose}
       >
         {window.trans("Insert")}

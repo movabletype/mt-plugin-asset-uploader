@@ -1,6 +1,7 @@
+import type { Asset } from "@movabletype/app/object";
+
 export interface InsertMethod {
-  (asset: object, insertOptions: object): Promise<void> | void;
-  (html: string): Promise<void> | void;
+  (data: { asset: Asset; insertOptions: Parameters<Asset["asHtml"]>[0] }[]): void | Promise<void>;
 }
 interface Context {
   insert: InsertMethod;

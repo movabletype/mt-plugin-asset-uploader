@@ -19,6 +19,7 @@ use vars qw( %Lexicon );
     'Cancel (x)' => 'キャンセル',
     'Upload'     => 'アップロード',
     'Search'     => '検索',
+    'View image' => '表示',
 );
 
 1;
