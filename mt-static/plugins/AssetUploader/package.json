@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "copy:app": "copyfiles -f 'node_modules/@movabletype/app/dist/bundle/**/*' app-dist",
+    "copy:app": "copyfiles -f node_modules/@movabletype/app/dist/bundle/* app-dist/ && copyfiles -f node_modules/@movabletype/app/dist/bundle/assets/* app-dist/assets/",
     "dev": "npm run copy:app && vite build --watch",
     "build": "npm run copy:app && rimraf dist && vite build",
     "preview": "vite preview",
