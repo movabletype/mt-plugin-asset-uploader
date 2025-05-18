@@ -4,7 +4,11 @@
   import UploadOptions from "./UploadOptions.svelte";
   import { getAssetModalContext } from "./context";
   import Store from "./store";
-  import type { UploadOptions as StoreUploadOptions } from "./store";
+  import type { UploadOptions as StoreUploadOptions, AssetData } from "./store";
+  import alignLeftIcon from "../assets/ic_alignleft.svg?raw";
+  import alignCenterIcon from "../assets/ic_aligncenter.svg?raw";
+  import alignRightIcon from "../assets/ic_alignright.svg?raw";
+  import alignNoneIcon from "../assets/ic_alignnone.svg?raw";
 
   let {
     store,
@@ -52,6 +56,16 @@
     });
   });
 
+  let draggingContainer = $state<HTMLDivElement>();
+  $effect(() => {
+    if (draggingContainer) {
+      draggingContainer.style.setProperty(
+        "--mt-asset-uploader-dragging-text",
+        `"${window.trans("Drop files here")}"`
+      );
+    }
+  });
+
   function dropHandler(ev: DragEvent) {
     ev.preventDefault();
     isDragging = false;
@@ -69,6 +83,16 @@
     }
     document.addEventListener("dragenter", documentDragEnterHandler);
   }
+
+  function updateAlign(assetId: string, align: AssetData["align"]) {
+    return () => {
+      const asset = $selectedObjects.find((asset) => asset.id === assetId);
+      if (asset) {
+        asset.align = align;
+      }
+      $selectedObjects = $selectedObjects;
+    };
+  }
 </script>
 
 {#if !showUploadOptionsView}
@@ -83,6 +107,7 @@
         ondragover={(ev) => ev.preventDefault()}
         ondragenter={dragEnterHandler}
         ondrop={dropHandler}
+        bind:this={draggingContainer}
       >
         <div class="row">
           <div class="col row">
@@ -107,7 +132,7 @@
               class="btn btn-default"
               onclick={() => {
                 showUploadOptionsView = true;
-              }}>設定</button
+              }}>{window.trans("Settings")}</button
             >
           </div>
         </div>
@@ -140,7 +165,7 @@
           </div>
           <div class="col-auto mt-asset-uploader-insert-options">
             {#each $selectedObjects as asset (asset.id)}
-              <div>
+              <div class="mt-asset-uploader-insert-options-item">
                 <div class="row g-4">
                   <div class="col-6">
                     <img src={asset.asset.url} class="mw-100" alt={asset.asset.label} />
@@ -157,7 +182,7 @@
                 {#if selectMetaData}
                   <div class="field field-content field-top-label mt-4">
                     <label class="form-label" for="asset-uploader-alternative-text"
-                      >代替テキスト</label
+                      >{window.trans("Alternative text")}</label
                     >
                     <input
                       id="asset-uploader-alternative-text"
@@ -167,7 +192,9 @@
                     />
                   </div>
                   <div class="field field-content field-top-label mt-4">
-                    <label class="form-label" for="asset-uploader-caption">キャプション</label>
+                    <label class="form-label" for="asset-uploader-caption"
+                      >{window.trans("Caption")}</label
+                    >
                     <textarea
                       id="asset-uploader-caption"
                       class="form-control text full"
@@ -176,14 +203,74 @@
                     ></textarea>
                   </div>
                   <div class="field field-content field-top-label mt-4">
-                    <label class="form-label" for="asset-uploader-width">横幅</label>
-                    <select id="asset-uploader-width" class="form-control" bind:value={asset.width}>
-                      <option value="320">320</option>
-                      <option value="640">640</option>
-                      <option value="1024">1024</option>
-                      <option value="">Original size</option>
-                      <option value="specify">Specify</option>
-                    </select>
+                    <label class="form-label" for="asset-uploader-width"
+                      >{window.trans("Width")}</label
+                    >
+                    <div class="input-group">
+                      <input
+                        type="number"
+                        id="asset-uploader-width"
+                        class="form-control"
+                        bind:value={asset.width}
+                      />
+                      <span class="input-group-text">{window.trans("pixels")}</span>
+                    </div>
+                  </div>
+                  <div class="field field-content field-top-label mt-4">
+                    <div class="form-check">
+                      <input
+                        type="checkbox"
+                        id="asset-uploader-link-to-original"
+                        class="form-check-input"
+                        bind:checked={asset.linkToOriginal}
+                      />
+                      <label class="form-check-label" for="asset-uploader-link-to-original"
+                        >{window.trans("Link to original image")}</label
+                      >
+                    </div>
+                  </div>
+                  <div class="field field-content field-top-label mt-4">
+                    <label class="form-label" for="asset-uploader-width"
+                      >{window.trans("Align")}</label
+                    >
+                    <div class="btn-group w-100 align-button-group">
+                      <button
+                        type="button"
+                        class="btn btn-default"
+                        class:active-align={asset.align === "left"}
+                        onclick={updateAlign(asset.id, "left")}
+                        aria-label={window.trans("Align left")}
+                      >
+                        {@html alignLeftIcon}
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-default"
+                        class:active-align={asset.align === "center"}
+                        onclick={updateAlign(asset.id, "center")}
+                        aria-label={window.trans("Align center")}
+                      >
+                        {@html alignCenterIcon}
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-default"
+                        class:active-align={asset.align === "right"}
+                        onclick={updateAlign(asset.id, "right")}
+                        aria-label={window.trans("Align right")}
+                      >
+                        {@html alignRightIcon}
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-default"
+                        class:active-align={asset.align === "none"}
+                        onclick={updateAlign(asset.id, "none")}
+                        aria-label={window.trans("Align none")}
+                      >
+                        {@html alignNoneIcon}
+                      </button>
+                    </div>
                   </div>
                 {/if}
               </div>
@@ -218,7 +305,7 @@
 
 <style>
   .mt-asset-uploader-dragging:after {
-    content: "ファイルをドロップしてください";
+    content: var(--mt-asset-uploader-dragging-text);
     position: absolute;
     top: 0;
     left: -5px;
@@ -252,6 +339,16 @@
     width: 245px;
     height: 460px;
     overflow-y: auto;
+  }
+  .mt-asset-uploader-insert-options-item {
+    margin-bottom: 10px;
+  }
+  .mt-asset-uploader-insert-options-item:last-child {
+    margin-bottom: 0;
+  }
+  .align-button-group .active-align {
+    background-color: #e9ecef;
+    box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
   }
   input[type="search"] {
     width: 10rem;

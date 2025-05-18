@@ -14,12 +14,23 @@ use base 'MT::Plugin::AssetUploader::L10N::en_us';
 use vars qw( %Lexicon );
 
 %Lexicon = (
-    'Insert (s)' => '挿入 (s)',
-    'Insert'     => '挿入',
-    'Cancel (x)' => 'キャンセル',
-    'Upload'     => 'アップロード',
-    'Search'     => '検索',
-    'View image' => '表示',
+    'Insert (s)'             => '挿入 (s)',
+    'Insert'                 => '挿入',
+    'Cancel (x)'             => 'キャンセル',
+    'Upload'                 => 'アップロード',
+    'Search'                 => '検索',
+    'View image'             => '表示',
+    'Alternative text'       => '代替テキスト',
+    'Embed image'            => '画像の埋め込み',
+    'Settings'               => '設定',
+    'Drop files here'        => 'ファイルをここにドロップしてください',
+    'Align'                  => '配置',
+    'Align left'             => '左寄せ',
+    'Align center'           => '中央寄せ',
+    'Align right'            => '右寄せ',
+    'Align none'             => 'なし',
+    'pixels'                 => 'ピクセル',
+    'Link to original image' => 'オリジナル画像にリンクする',
 );
 
 1;

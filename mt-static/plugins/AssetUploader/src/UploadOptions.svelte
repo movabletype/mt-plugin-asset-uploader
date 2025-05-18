@@ -5,12 +5,17 @@
 
   let {
     showUploadOptionsView = $bindable(),
-    uploadOptions = $bindable()
+    uploadOptions: _uploadOptions = $bindable()
   }: {
     showUploadOptionsView: boolean;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     uploadOptions: any;
   } = $props();
+
+  let uploadOptions = $state<any>();
+  $effect(() => {
+    _uploadOptions = uploadOptions;
+  });
 
   if (!uploadOptions) {
     onMount(async () => {

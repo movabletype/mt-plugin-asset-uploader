@@ -1,26 +1,31 @@
 <script module>
-    export type { InitialSelectedAssetData } from "./store";
+  import type { InsertMethod } from "./context";
+  import type { InitialSelectedAssetData, Options } from "./store";
+
+  export type { InitialSelectedAssetData } from "./store";
+  export type { Options };
 </script>
+
 <script lang="ts">
   import { unmount } from "svelte";
   import { Modal } from "@movabletype/svelte-components";
   import SelectionPanel from "./SelectionPanel.svelte";
   import { setAssetModalContext } from "./context";
-  import type { InsertMethod } from "./context";
   import Store from "./store";
-  import type { InitialSelectedAssetData } from "./store";
 
   let {
     insert,
     selectMetaData = false,
     multiSelect = false,
     params,
+    options,
     initialSelectedData
   }: {
     insert: InsertMethod;
     selectMetaData?: boolean;
     multiSelect?: boolean;
-    params: URLSearchParams;
+    params: Record<string, string>;
+    options: Options;
     initialSelectedData?: InitialSelectedAssetData[];
   } = $props();
 
@@ -34,10 +39,11 @@
   const store = new Store({
     multiSelect,
     params,
+    options,
     initialSelectedData
   });
 </script>
 
-<Modal size="lg" on:close={close} bind:this={self}>
+<Modal id="mt-asset-uploader-modal" size="lg" on:close={close} bind:this={self}>
   <SelectionPanel {selectMetaData} {store} />
 </Modal>

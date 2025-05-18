@@ -5,5 +5,11 @@
   <script src="<$mt:var name="static_uri"$>plugins/AssetUploader/locales/<$mt:var name="local_lang_id"$>.js?v=<mt:Var name="AssetUploader_version" />"></script>
 </mt:If>
 <script src="<$mt:var name="static_uri"$>plugins/AssetUploader/app-dist/bootstrap.js?v=<mt:Var name="AssetUploader_version" />" type="module"></script>
-<script src="<$mt:var name="static_uri"$>plugins/AssetUploader/dist/bootstrap.js?v=<mt:Var name="AssetUploader_version" />" type="module"></script>
+<script
+  src="<$mt:var name="static_uri"$>plugins/AssetUploader/dist/bootstrap.js?v=<mt:Var name="AssetUploader_version" />"
+  type="module"
+  id="asset-uploader-script"
+  data-blog-id="<mt:Var name="AssetUploader_blog_id" encode_html="1" />"
+  data-options="<mt:Var name="AssetUploader_options" to_json="1" encode_html="1" />"
+></script>
 </mt:Unless>

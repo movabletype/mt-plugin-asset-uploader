@@ -10,7 +10,9 @@ applications:
     callbacks:
       template_param.header: $AssetUploader::MT::Plugin::AssetUploader::App::CMS::template_param_header
     methods:
-      asset_uploader_as_html: $AssetUploader::MT::Plugin::AssetUploader::App::CMS::as_html
+      asset_uploader_as_html:
+        code: $AssetUploader::MT::Plugin::AssetUploader::App::CMS::as_html
+        app_mode: JSON
 
 list_properties:
   asset:
@@ -29,3 +31,8 @@ list_properties:
     asset_uploader_thumbnail_url:
       display: none
       html: $AssetUploader::MT::Plugin::AssetUploader::App::CMS::list_props_thumbnail_url_html
+
+default_templates:
+  system:
+    asset_uploader_image:
+      label: Embed image

@@ -4,7 +4,14 @@ import { Asset, SUPPORTED_LIMITS } from "@movabletype/app/object";
 import type { Item } from "@movabletype/app/object";
 import { PagerData } from "@movabletype/svelte-components";
 
-interface AssetData {
+export interface Options {
+  imageDefaultThumb: boolean;
+  imageDefaultWidth: number;
+  imageDefaultAlign: string;
+  imageDefaultPopup: string;
+}
+
+export interface AssetData {
   id: string;
   status: "loading" | "loaded" | "error";
   selected: boolean;
@@ -12,6 +19,8 @@ interface AssetData {
   alternativeText: string;
   caption: string;
   width: number | undefined;
+  linkToOriginal: boolean;
+  align: "left" | "center" | "right" | "none";
   uploadPromise?: ReturnType<MTAPIMap["uploadAssets"]>[0];
 }
 export type InitialSelectedAssetData = {
@@ -22,7 +31,8 @@ export type UploadOptions = Parameters<MTAPIMap["uploadAssets"]>[0]["options"];
 
 export default class Store {
   status: "loading" | "loaded" | "error" = "loading";
-  #params: URLSearchParams;
+  #options: Options;
+  #params: Record<string, string>;
   #perPage: number = 12;
   #currentPage: number = 1;
   #multiSelect: boolean;
@@ -45,10 +55,12 @@ export default class Store {
   constructor({
     multiSelect,
     params,
+    options,
     initialSelectedData = []
   }: {
     multiSelect: boolean;
-    params: URLSearchParams;
+    params: Record<string, string>;
+    options: Options;
     initialSelectedData?: InitialSelectedAssetData[];
   }) {
     this.objects = readable<AssetData[]>([], (set) => {
@@ -63,6 +75,7 @@ export default class Store {
 
     this.#params = params;
     this.#multiSelect = multiSelect;
+    this.#options = options;
     this.load({ initialSelectedData });
   }
 
@@ -70,7 +83,7 @@ export default class Store {
   async #load(...args: Parameters<typeof Asset.load>) {
     const lastLoadPromise = this.#loadPromise;
     return (this.#loadPromise = lastLoadPromise.then(() => Asset.load(...args)) as ReturnType<
-      typeof Asset.load
+      typeof Asset.load<Asset>
     >);
   }
 
@@ -100,7 +113,9 @@ export default class Store {
             asset: assets[j],
             alternativeText: "",
             caption: "",
-            width: undefined
+            width: this.#options.imageDefaultThumb && this.#options.imageDefaultWidth < assets[j].width ? this.#options.imageDefaultWidth : assets[j].width,
+            linkToOriginal: true,
+            align: "none"
           } as AssetData;
         }
       }
@@ -126,7 +141,7 @@ export default class Store {
   }
 
   #blogId() {
-    return this.#params.get("blog_id") || "";
+    return this.#params.blog_id || "";
   }
 
   #limit() {
@@ -201,7 +216,9 @@ export default class Store {
             const assetData = {
               alternativeText: "",
               caption: "",
-              width: undefined,
+              width: this.#options.imageDefaultThumb && this.#options.imageDefaultWidth < asset.width ? this.#options.imageDefaultWidth : asset.width,
+              linkToOriginal: true,
+              align: "none",
               ...data,
               status: "loaded",
               selected: true,
@@ -234,7 +251,9 @@ export default class Store {
             asset,
             alternativeText: "",
             caption: "",
-            width: undefined
+            width: this.#options.imageDefaultThumb && this.#options.imageDefaultWidth < asset.width ? this.#options.imageDefaultWidth : asset.width,
+            linkToOriginal: true,
+            align: "none"
           }) as AssetData
       )
     );
@@ -283,7 +302,7 @@ export default class Store {
 
       const uploadPromise = uploadAssets({
         files: [file],
-        context: { blogId: parseInt(this.#params.get("blog_id")!) },
+        context: { blogId: parseInt(this.#params.blog_id) },
         options,
         requestOptions: {}
       })[0];
@@ -300,12 +319,14 @@ export default class Store {
           description: "",
           width,
           height,
-          url: URL.createObjectURL(file),
-          thumbnail_url: URL.createObjectURL(file)
+          url,
+          thumbnail_url: url
         }),
         alternativeText: "",
         caption: "",
-        width: undefined,
+        width: this.#options.imageDefaultThumb && this.#options.imageDefaultWidth < width ? this.#options.imageDefaultWidth : width,
+        linkToOriginal: true,
+        align: "none",
         uploadPromise
       });
 
