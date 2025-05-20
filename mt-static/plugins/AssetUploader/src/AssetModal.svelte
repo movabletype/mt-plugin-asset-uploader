@@ -1,9 +1,8 @@
 <script module>
   import type { InsertMethod } from "./context";
   import type { InitialSelectedAssetData, Options } from "./store";
-
-  export type { InitialSelectedAssetData } from "./store";
-  export type { Options };
+  // eslint-disable-next-line no-import-assign
+  export type { InitialSelectedAssetData, Options };
 </script>
 
 <script lang="ts">

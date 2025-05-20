@@ -29,7 +29,6 @@
     store.search(searchText);
   }
 
-  // svelte-ignore non_reactive_update FIXME:
   let close: (() => void) | undefined;
 
   let showUploadOptionsView = $state(false);
@@ -110,7 +109,6 @@
 
 {#if !showUploadOptionsView}
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <!-- svelte-ignore a11y_click_events_have_key_events -->
   <ModalContent bind:close>
     <svelte:fragment slot="title">{window.trans("Insert Image Asset")}</svelte:fragment>
     <svelte:fragment slot="body">

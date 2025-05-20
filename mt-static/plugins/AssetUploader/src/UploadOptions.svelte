@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { ModalContent } from "@movabletype/svelte-components";
   import { ComponentList } from "@movabletype/svelte-components";
 
@@ -12,6 +11,7 @@
     uploadOptions: any;
   } = $props();
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let uploadOptions = $state<any>();
   $effect(() => {
     _uploadOptions = uploadOptions;
