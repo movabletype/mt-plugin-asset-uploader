@@ -23,6 +23,7 @@ use vars qw( %Lexicon );
     'Alternative text'       => '代替テキスト',
     'Embed image'            => '画像の埋め込み',
     'Settings'               => '設定',
+    'Finish'                 => '完了',
     'Drop files here'        => 'ファイルをここにドロップしてください',
     'Align'                  => '配置',
     'Align left'             => '左寄せ',
@@ -30,6 +31,7 @@ use vars qw( %Lexicon );
     'Align right'            => '右寄せ',
     'Align none'             => 'なし',
     'pixels'                 => 'ピクセル',
+    'Edit information'       => '情報を編集',
     'Link to original image' => 'オリジナル画像にリンクする',
 );
 

@@ -10,6 +10,7 @@ use utf8;
 
 use MT::Util                  qw(encode_html);
 use MT::Plugin::AssetUploader qw(plugin);
+use JSON;
 
 sub template_param_header {
     my ($cb, $app, $param, $tmpl) = @_;
@@ -52,9 +53,11 @@ sub as_html {
         id              => [qw/ID/],
         include         => [qw/FLAG/],
         enclose         => [qw/FLAG/],
-        alternativeText => [qw/STRING/],
-        caption         => [qw/TEXT/],
-        width           => [qw/NUMBER/],
+        alternativeText => [qw/MAYBE_STRING/],
+        caption         => [qw/MAYBE_TEXT/],
+        width           => [qw/MAYBE_NUMBER/],
+        linkToOriginal  => [qw/MAYBE_FLAG/],
+        align           => [qw/MAYBE_STRING/],
     }) or return;
 
     my $perms = $app->permissions
@@ -77,12 +80,16 @@ sub as_html {
     $param{enclose} = $app->param('enclose') || 0;
 
     if (!$param{include}) {
-        return $asset->as_html(\%param);    # custom field
+        return $app->json_result({
+            html => $asset->as_html(\%param),
+        });
     }
 
     my $width            = $app->param('width');
     my $alternative_text = $app->param('alternativeText');
     my $caption          = $app->param('caption');
+    my $link_to_original = $app->param('linkToOriginal');
+    my $align            = $app->param('align');
 
     my ($thumbnail_url, $thumbnail_width, $thumbnail_height);
     if ($width && $width < $asset->image_width) {
@@ -101,9 +108,25 @@ sub as_html {
     my $ctx = $tmpl->context;
     $ctx->stash('asset', $asset);
     my $html = $tmpl->output({
-        alternativeText => $alternative_text,
-        caption         => $caption,
-        width           => $width,
+        alternative_text => $alternative_text,
+        caption          => $caption,
+        width            => $width,
+        link_to_original => $link_to_original,
+        align            => $align,
+        insert_options   => JSON->new->utf8->encode({
+            alternativeText => $alternative_text,
+            caption         => $caption,
+            width           => $width,
+            linkToOriginal  => $link_to_original,
+            align           => $align,
+        }),
+        asset_id               => $asset->id,
+        asset_url              => $asset->url,
+        asset_width            => $asset->image_width,
+        asset_height           => $asset->image_height,
+        asset_thumbnail_url    => $thumbnail_url,
+        asset_thumbnail_width  => $thumbnail_width,
+        asset_thumbnail_height => $thumbnail_height,
     });
 
     return $app->error($tmpl->errstr)
@@ -114,6 +137,8 @@ sub as_html {
         alternativeText      => $alternative_text,
         caption              => $caption,
         width                => $width,
+        linkToOriginal       => $link_to_original,
+        align                => $align,
         assetId              => $asset->id,
         assetUrl             => $asset->url,
         assetWidth           => $asset->image_width,

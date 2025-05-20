@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { ModalContent, Pager } from "@movabletype/svelte-components";
+  import type { Asset } from "@movabletype/app/object";
   import UploadOptions from "./UploadOptions.svelte";
   import { getAssetModalContext } from "./context";
   import Store from "./store";
@@ -32,6 +33,18 @@
   let close: (() => void) | undefined;
 
   let showUploadOptionsView = $state(false);
+  let editingAsset = $state<{
+    asset: Asset;
+    label: string;
+    description: string;
+  }>();
+  // reset editingAsset when selectedObjects changes
+  $effect(() => {
+    if ($selectedObjects) {
+      editingAsset = undefined;
+    }
+  });
+
   // svelte-ignore non_reactive_update
   let uploadOptions: StoreUploadOptions;
 
@@ -127,13 +140,15 @@
             </div>
           </div>
           <div class="col-auto text-right">
-            <button
-              type="button"
-              class="btn btn-default"
-              onclick={() => {
-                showUploadOptionsView = true;
-              }}>{window.trans("Settings")}</button
-            >
+            {#if false}
+              <button
+                type="button"
+                class="btn btn-default"
+                onclick={() => {
+                  showUploadOptionsView = true;
+                }}>{window.trans("Settings")}</button
+              >
+            {/if}
           </div>
         </div>
         <div class="row p-3">
@@ -164,117 +179,198 @@
             </div>
           </div>
           <div class="col-auto mt-asset-uploader-insert-options">
-            {#each $selectedObjects as asset (asset.id)}
+            {#if editingAsset}
               <div class="mt-asset-uploader-insert-options-item">
                 <div class="row g-4">
-                  <div class="col-6">
-                    <img src={asset.asset.url} class="mw-100" alt={asset.asset.label} />
+                  <div class="col-5">
+                    <img
+                      src={editingAsset.asset.url}
+                      class="mw-100 mt-asset-uploader-insert-options-item-preview"
+                      alt={editingAsset.asset.label}
+                    />
                   </div>
-                  <div class="col-6">
+                  <div class="col-7">
                     <div>
-                      {asset.asset.label}
+                      {editingAsset.label}
                     </div>
                     <div>
-                      {asset.asset.width} x {asset.asset.height}
+                      {editingAsset.asset.width} x {editingAsset.asset.height}
+                    </div>
+                    <div>
+                      <button type="button" class="btn btn-link fw-normal p-0" disabled
+                        >{window.trans("Edit information")}</button
+                      >
                     </div>
                   </div>
-                </div>
-                {#if selectMetaData}
                   <div class="field field-content field-top-label mt-4">
-                    <label class="form-label" for="asset-uploader-alternative-text"
-                      >{window.trans("Alternative text")}</label
+                    <label class="form-label" for="asset-uploader-label"
+                      >{window.trans("Label")}</label
                     >
                     <input
-                      id="asset-uploader-alternative-text"
+                      id="asset-uploader-label"
                       type="text"
                       class="form-control text full"
-                      bind:value={asset.alternativeText}
+                      bind:value={editingAsset.label}
                     />
                   </div>
                   <div class="field field-content field-top-label mt-4">
-                    <label class="form-label" for="asset-uploader-caption"
-                      >{window.trans("Caption")}</label
+                    <label class="form-label" for="asset-uploader-description"
+                      >{window.trans("Description")}</label
                     >
                     <textarea
-                      id="asset-uploader-caption"
+                      id="asset-uploader-description"
                       class="form-control text full"
-                      rows="1"
-                      bind:value={asset.caption}
+                      rows="2"
+                      bind:value={editingAsset.description}
                     ></textarea>
                   </div>
-                  <div class="field field-content field-top-label mt-4">
-                    <label class="form-label" for="asset-uploader-width"
-                      >{window.trans("Width")}</label
+                  <div class="field field-content field-top-label mt-4 text-end">
+                    <button
+                      type="button"
+                      class="btn btn-outline-primary"
+                      disabled={!editingAsset.label}
+                      onclick={() => {
+                        Object.assign(editingAsset!.asset, {
+                          label: editingAsset!.label,
+                          description: editingAsset!.description
+                        });
+                        editingAsset!.asset.save();
+                        editingAsset = undefined;
+                      }}>{window.trans("Finish")}</button
                     >
-                    <div class="input-group">
-                      <input
-                        type="number"
-                        id="asset-uploader-width"
-                        class="form-control"
-                        bind:value={asset.width}
-                      />
-                      <span class="input-group-text">{window.trans("pixels")}</span>
-                    </div>
                   </div>
-                  <div class="field field-content field-top-label mt-4">
-                    <div class="form-check">
-                      <input
-                        type="checkbox"
-                        id="asset-uploader-link-to-original"
-                        class="form-check-input"
-                        bind:checked={asset.linkToOriginal}
-                      />
-                      <label class="form-check-label" for="asset-uploader-link-to-original"
-                        >{window.trans("Link to original image")}</label
-                      >
-                    </div>
-                  </div>
-                  <div class="field field-content field-top-label mt-4">
-                    <label class="form-label" for="asset-uploader-width"
-                      >{window.trans("Align")}</label
-                    >
-                    <div class="btn-group w-100 align-button-group">
-                      <button
-                        type="button"
-                        class="btn btn-default"
-                        class:active-align={asset.align === "left"}
-                        onclick={updateAlign(asset.id, "left")}
-                        aria-label={window.trans("Align left")}
-                      >
-                        {@html alignLeftIcon}
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-default"
-                        class:active-align={asset.align === "center"}
-                        onclick={updateAlign(asset.id, "center")}
-                        aria-label={window.trans("Align center")}
-                      >
-                        {@html alignCenterIcon}
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-default"
-                        class:active-align={asset.align === "right"}
-                        onclick={updateAlign(asset.id, "right")}
-                        aria-label={window.trans("Align right")}
-                      >
-                        {@html alignRightIcon}
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-default"
-                        class:active-align={asset.align === "none"}
-                        onclick={updateAlign(asset.id, "none")}
-                        aria-label={window.trans("Align none")}
-                      >
-                        {@html alignNoneIcon}
-                      </button>
-                    </div>
-                  </div>
-                {/if}
+                </div>
               </div>
-            {/each}
+            {:else}
+              {#each $selectedObjects as asset (asset.id)}
+                <div class="mt-asset-uploader-insert-options-item">
+                  <div class="row g-4">
+                    <div class="col-5">
+                      <img
+                        src={asset.asset.url}
+                        class="mw-100 mt-asset-uploader-insert-options-item-preview"
+                        alt={asset.asset.label}
+                      />
+                    </div>
+                    <div class="col-7">
+                      <div>
+                        {asset.asset.label}
+                      </div>
+                      <div>
+                        {asset.asset.width} x {asset.asset.height}
+                      </div>
+                      <div>
+                        <button
+                          type="button"
+                          class="btn btn-link fw-normal p-0"
+                          onclick={() => {
+                            editingAsset = {
+                              asset: asset.asset,
+                              label: asset.asset.label,
+                              description: asset.asset.description
+                            };
+                          }}>{window.trans("Edit information")}</button
+                        >
+                      </div>
+                    </div>
+                  </div>
+                  {#if selectMetaData}
+                    <div class="field field-content field-top-label mt-4">
+                      <label class="form-label" for="asset-uploader-alternative-text"
+                        >{window.trans("Alternative text")}</label
+                      >
+                      <input
+                        id="asset-uploader-alternative-text"
+                        type="text"
+                        class="form-control text full"
+                        bind:value={asset.alternativeText}
+                      />
+                    </div>
+                    <div class="field field-content field-top-label mt-4">
+                      <label class="form-label" for="asset-uploader-caption"
+                        >{window.trans("Caption")}</label
+                      >
+                      <textarea
+                        id="asset-uploader-caption"
+                        class="form-control text full"
+                        rows="1"
+                        bind:value={asset.caption}
+                      ></textarea>
+                    </div>
+                    <div class="field field-content field-top-label mt-4">
+                      <label class="form-label" for="asset-uploader-width"
+                        >{window.trans("Width")}</label
+                      >
+                      <div class="input-group">
+                        <input
+                          type="number"
+                          id="asset-uploader-width"
+                          class="form-control"
+                          bind:value={asset.width}
+                        />
+                        <span class="input-group-text">{window.trans("pixels")}</span>
+                      </div>
+                    </div>
+                    <div class="field field-content field-top-label mt-4">
+                      <div class="form-check">
+                        <input
+                          type="checkbox"
+                          id="asset-uploader-link-to-original"
+                          class="form-check-input"
+                          bind:checked={asset.linkToOriginal}
+                        />
+                        <label class="form-check-label" for="asset-uploader-link-to-original"
+                          >{window.trans("Link to original image")}</label
+                        >
+                      </div>
+                    </div>
+                    <div class="field field-content field-top-label mt-4">
+                      <label class="form-label" for="asset-uploader-width"
+                        >{window.trans("Align")}</label
+                      >
+                      <div class="btn-group w-100 align-button-group">
+                        <button
+                          type="button"
+                          class="btn btn-default"
+                          class:active-align={asset.align === "left"}
+                          onclick={updateAlign(asset.id, "left")}
+                          aria-label={window.trans("Align left")}
+                        >
+                          {@html alignLeftIcon}
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-default"
+                          class:active-align={asset.align === "center"}
+                          onclick={updateAlign(asset.id, "center")}
+                          aria-label={window.trans("Align center")}
+                        >
+                          {@html alignCenterIcon}
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-default"
+                          class:active-align={asset.align === "right"}
+                          onclick={updateAlign(asset.id, "right")}
+                          aria-label={window.trans("Align right")}
+                        >
+                          {@html alignRightIcon}
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-default"
+                          class:active-align={asset.align === "none"}
+                          onclick={updateAlign(asset.id, "none")}
+                          aria-label={window.trans("Align none")}
+                        >
+                          {@html alignNoneIcon}
+                        </button>
+                      </div>
+                    </div>
+                  {/if}
+                </div>
+              {/each}
+            {/if}
           </div>
         </div>
       </div>
@@ -331,6 +427,7 @@
     object-position: center center;
     width: 126px;
     height: 126px;
+    background: url(data:image/gif;base64,R0lGODlhEAAQAPEBAAAAAL+/v////wAAACH5BAAAAAAALAAAAAAQABAAAAIfjG+iq4jM3IFLJipswNly/XkcBpIiVaInlLJr9FZWAQA7);
   }
   .mt-asset-uploader-asset img.selected {
     outline: 3px solid #0176bf;
@@ -346,9 +443,13 @@
   .mt-asset-uploader-insert-options-item:last-child {
     margin-bottom: 0;
   }
+  .mt-asset-uploader-insert-options-item-preview {
+    max-height: 100px;
+    background: url(data:image/gif;base64,R0lGODlhEAAQAPEBAAAAAL+/v////wAAACH5BAAAAAAALAAAAAAQABAAAAIfjG+iq4jM3IFLJipswNly/XkcBpIiVaInlLJr9FZWAQA7);
+  }
   .align-button-group .active-align {
     background-color: #e9ecef;
-    box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   }
   input[type="search"] {
     width: 10rem;

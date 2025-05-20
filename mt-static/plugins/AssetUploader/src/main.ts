@@ -33,7 +33,9 @@ const getInsertData = async (
           include: true,
           alternativeText: insertOptions.alternativeText,
           caption: insertOptions.caption,
-          width: insertOptions.width
+          width: insertOptions.width,
+          linkToOriginal: insertOptions.linkToOriginal,
+          align: insertOptions.align
         })
       )
     )
