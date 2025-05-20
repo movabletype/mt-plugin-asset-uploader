@@ -17,15 +17,15 @@
     _uploadOptions = uploadOptions;
   });
 
-  if (!uploadOptions) {
-    onMount(async () => {
-      const defaultOptions = await new Promise((resolve) => {
-        // fetch default option value from server?
-        resolve({ fixOrientation: true });
-      });
-      uploadOptions = defaultOptions;
-    });
-  }
+  //   if (!uploadOptions) {
+  //     onMount(async () => {
+  //       const defaultOptions = await new Promise((resolve) => {
+  //         // fetch default option value from server?
+  //         resolve({ fixOrientation: true });
+  //       });
+  //       uploadOptions = defaultOptions;
+  //     });
+  //   }
 
   function onMessage(ev: CustomEvent) {
     Object.assign(uploadOptions, ev.detail);
