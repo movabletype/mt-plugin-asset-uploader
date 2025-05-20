@@ -113,7 +113,10 @@ export default class Store {
             asset: assets[j],
             alternativeText: "",
             caption: "",
-            width: this.#options.imageDefaultThumb && this.#options.imageDefaultWidth < assets[j].width ? this.#options.imageDefaultWidth : assets[j].width,
+            width:
+              this.#options.imageDefaultThumb && this.#options.imageDefaultWidth < assets[j].width
+                ? this.#options.imageDefaultWidth
+                : assets[j].width,
             linkToOriginal: true,
             align: "none"
           } as AssetData;
@@ -216,7 +219,10 @@ export default class Store {
             const assetData = {
               alternativeText: "",
               caption: "",
-              width: this.#options.imageDefaultThumb && this.#options.imageDefaultWidth < asset.width ? this.#options.imageDefaultWidth : asset.width,
+              width:
+                this.#options.imageDefaultThumb && this.#options.imageDefaultWidth < asset.width
+                  ? this.#options.imageDefaultWidth
+                  : asset.width,
               linkToOriginal: true,
               align: "none",
               ...data,
@@ -251,7 +257,10 @@ export default class Store {
             asset,
             alternativeText: "",
             caption: "",
-            width: this.#options.imageDefaultThumb && this.#options.imageDefaultWidth < asset.width ? this.#options.imageDefaultWidth : asset.width,
+            width:
+              this.#options.imageDefaultThumb && this.#options.imageDefaultWidth < asset.width
+                ? this.#options.imageDefaultWidth
+                : asset.width,
             linkToOriginal: true,
             align: "none"
           }) as AssetData
@@ -324,7 +333,10 @@ export default class Store {
         }),
         alternativeText: "",
         caption: "",
-        width: this.#options.imageDefaultThumb && this.#options.imageDefaultWidth < width ? this.#options.imageDefaultWidth : width,
+        width:
+          this.#options.imageDefaultThumb && this.#options.imageDefaultWidth < width
+            ? this.#options.imageDefaultWidth
+            : width,
         linkToOriginal: true,
         align: "none",
         uploadPromise
