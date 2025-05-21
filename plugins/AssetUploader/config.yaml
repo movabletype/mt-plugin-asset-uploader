@@ -5,6 +5,8 @@ author_link: http://www.movabletype.org/
 author_name: Six Apart Ltd.
 l10n_class: MT::Plugin::AssetUploader::L10N
 
+schema_version: 1
+
 applications:
   cms:
     callbacks:
