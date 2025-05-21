@@ -1,3 +1,4 @@
+<mt:If name="asset_type" eq="image">
 <mt:SetVarBlock name="data_attribute"> data-mt-asset-id="<mt:Var name="asset_id" />"</mt:SetVarBlock>
 <mt:Var name="class_name" value="asset asset-image" />
 <mt:Var name="style" value="" />
@@ -38,12 +39,15 @@
   </mt:If>
 </mt:If>
 <mt:SetVarBlock name="html">
-<img src="<mt:Var name="asset_thumbnail_url" />" width="<mt:Var name="asset_thumbnail_width" />" height="<mt:Var name="asset_thumbnail_height" />" alt="<mt:Var name="alternative_text" />" class="<mt:Var name="class_name" />"<mt:if name="style"> style="<mt:Var name="style" />"</mt:if>/>
+<img src="<mt:Var name="asset_thumbnail_url" />" width="<mt:Var name="asset_thumbnail_width" />" height="<mt:Var name="asset_thumbnail_height" />" alt="<mt:Var name="alternative_text" encode_html="1"/>" class="<mt:Var name="class_name" />"<mt:if name="style"> style="<mt:Var name="style" />"</mt:if>/>
 </mt:SetVarBlock>
 <mt:If name="link_to_original">
   <mt:SetVarBlock name="html"><a class="mt-asset-link" href="<mt:Var name="asset_url" />"><mt:Var name="html" /></a></mt:SetVarBlock>
 </mt:If>
 <mt:If name="caption">
-  <mt:SetVarBlock name="html"><figure<mt:If name="figure_style"> style="<mt:Var name="figure_style" />"</mt:If><mt:If name="figure_class_name"> class="<mt:Var name="figure_class_name" />"</mt:If>><mt:Var name="html" /><figcaption><mt:Var name="caption" nl2br="1" /></figcaption></figure></mt:SetVarBlock>
+  <mt:SetVarBlock name="html"><figure<mt:If name="figure_style"> style="<mt:Var name="figure_style" />"</mt:If><mt:If name="figure_class_name"> class="<mt:Var name="figure_class_name" />"</mt:If>><mt:Var name="html" /><figcaption><mt:Var name="caption" encode_html="1" nl2br="1" /></figcaption></figure></mt:SetVarBlock>
 </mt:If>
 <mt:Var name="html" regex_replace="/^<\w+\K/","$data_attribute" />
+<mt:Else>
+<a href="<mt:AssetURL encode_html="1"/>"><mt:AssetLabel encode_html="1"/></a>
+</mt:If>

@@ -100,11 +100,16 @@ sub as_html {
         $thumbnail_height = $asset->image_height;
     }
 
+    my $old_lang = MT->current_language;
+    MT->set_language('en');
+    my $asset_type = lc $asset->class_label;
+    MT->set_language($old_lang);
+
     my $tmpl = MT->model('template')->load({
         blog_id => $blog_id,
-        type    => 'asset_uploader_embed_image',
+        type    => 'asset_uploader_embed_asset',
     });
-    $tmpl = plugin()->load_tmpl('asset_uploader_embed_image.tmpl') unless $tmpl && $tmpl->text ne '';
+    $tmpl = plugin()->load_tmpl('asset_uploader_embed_asset.tmpl') unless $tmpl && $tmpl->text ne '';
     my $ctx = $tmpl->context;
     $ctx->stash('asset', $asset);
     my $html = $tmpl->output({
@@ -122,6 +127,7 @@ sub as_html {
         }),
         asset_id               => $asset->id,
         asset_url              => $asset->url,
+        asset_type             => $asset_type,
         asset_width            => $asset->image_width,
         asset_height           => $asset->image_height,
         asset_thumbnail_url    => $thumbnail_url,

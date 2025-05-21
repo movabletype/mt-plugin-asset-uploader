@@ -21,7 +21,7 @@ use vars qw( %Lexicon );
     'Search'                 => '検索',
     'View image'             => '表示',
     'Alternative text'       => '代替テキスト',
-    'Embed image'            => '画像の埋め込み',
+    'Embed asset'            => 'アセットの埋め込み',
     'Settings'               => '設定',
     'Finish'                 => '完了',
     'Drop files here'        => 'ファイルをここにドロップしてください',
