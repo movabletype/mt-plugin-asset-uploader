@@ -316,9 +316,8 @@ export default class Store {
         requestOptions: {}
       })[0];
 
-      const id = `upload-${Math.random().toString(36)}`;
-      this.#stash.unshift({
-        id,
+      const assetData: AssetData = {
+        id: `upload-${Math.random().toString(36)}`,
         status: "loading",
         selected: true,
         asset: new Asset({
@@ -340,7 +339,24 @@ export default class Store {
         linkToOriginal: true,
         align: "none",
         uploadPromise
-      });
+      };
+      this.#stash.unshift(assetData);
+      this.#offset++;
+      this.#totalCount++;
+
+      uploadPromise
+        .then(() => {
+          assetData.status = "loaded";
+          // const {
+          //   result: { asset }
+          // } = await res.json();
+          // Object.assign(assetData.asset, asset);
+        })
+        .catch(() => {
+          this.#stash = this.#stash.filter((data) => data.id !== assetData.id);
+          this.#offset--;
+          this.#totalCount--;
+        });
 
       this.setSelectedObjects(this.#stash.filter((data) => data.selected));
       this.#updateObjects();
