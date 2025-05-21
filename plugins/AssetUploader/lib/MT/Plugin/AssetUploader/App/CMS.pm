@@ -8,9 +8,11 @@ use strict;
 use warnings;
 use utf8;
 
+use File::Spec;
+use JSON;
+
 use MT::Util                  qw(encode_html);
 use MT::Plugin::AssetUploader qw(plugin);
-use JSON;
 
 sub template_param_header {
     my ($cb, $app, $param, $tmpl) = @_;
@@ -107,9 +109,13 @@ sub as_html {
 
     my $tmpl = MT->model('template')->load({
         blog_id => $blog_id,
-        type    => 'asset_uploader_embed_asset',
+        type    => 'asset_uploader_asset',
     });
-    $tmpl = plugin()->load_tmpl('asset_uploader_embed_asset.tmpl') unless $tmpl && $tmpl->text ne '';
+    $tmpl = MT->model('template')->new(
+        type   => 'filename',
+        path   => [plugin()->path],
+        source => File::Spec->catdir('default_templates', 'asset_uploader_asset.mtml'),
+    ) unless $tmpl && $tmpl->text ne '';
     my $ctx = $tmpl->context;
     $ctx->stash('asset', $asset);
     my $html = $tmpl->output({
