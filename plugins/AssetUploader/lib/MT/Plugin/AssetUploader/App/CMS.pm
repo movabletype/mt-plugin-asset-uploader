@@ -39,7 +39,7 @@ sub template_param_header {
                 name  => $plugin->name . '_options',
                 value => {
                     imageDefaultThumb => $blog->image_default_thumb ? JSON::true() : JSON::false(),
-                    imageDefaultWidth => $blog->image_default_width + 0,
+                    imageDefaultWidth => ($blog->image_default_width || 0) + 0,
                     imageDefaultAlign => $blog->image_default_align,
                     imageDefaultPopup => $blog->image_default_popup
                 } });
