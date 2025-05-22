@@ -5,7 +5,7 @@ author_link: http://www.movabletype.org/
 author_name: Six Apart Ltd.
 l10n_class: MT::Plugin::AssetUploader::L10N
 
-schema_version: 1
+schema_version: 1.0000
 
 applications:
   cms:
@@ -38,3 +38,7 @@ default_templates:
   system:
     asset_uploader_asset:
       label: Embed asset
+
+upgrade_functions:
+  asset_uploader_create_default_templates:
+    code: $AssetUploader::MT::Plugin::AssetUploader::App::Upgrade::create_default_templates
