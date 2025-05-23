@@ -144,7 +144,11 @@ export default class Store {
   }
 
   #blogId() {
-    return this.#params.blog_id || "";
+    return (
+      this.#params.blog_id ||
+      document.querySelector<HTMLScriptElement>("#asset-uploader-script")?.dataset.blogId ||
+      ""
+    );
   }
 
   #limit() {
