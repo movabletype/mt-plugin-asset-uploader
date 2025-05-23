@@ -23,6 +23,7 @@
   let selectedObjects = store.selectedObjects;
   let pagerData = store.pagerData;
   let isDragging = $state(false);
+  let isInserting = $state(false);
 
   let searchText = $state("");
   function search() {
@@ -49,6 +50,8 @@
 
   const { insert } = getAssetModalContext();
   async function insertThenClose() {
+    isInserting = true;
+
     const insertData = await Promise.all(
       $selectedObjects.map(async (data) => ({
         asset: await Store.getProcessedAsset(data),
@@ -378,7 +381,7 @@
         type="button"
         title={window.trans("Insert (s)")}
         class="action primary button btn btn-primary"
-        disabled={$selectedObjects.length === 0}
+        disabled={$selectedObjects.length === 0 || isInserting}
         onclick={insertThenClose}
       >
         {window.trans("Insert")}
