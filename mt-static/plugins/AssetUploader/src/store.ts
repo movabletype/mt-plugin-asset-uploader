@@ -9,6 +9,12 @@ export interface Options {
   imageDefaultWidth: number;
   imageDefaultAlign: string;
   imageDefaultPopup: string;
+  uploadDestination: string;
+  uploadExtraPath: string;
+  uploadAllowToChange: boolean;
+  uploadOperationIfExists: number;
+  uploadNormalizeOrientation: boolean;
+  uploadAutoRenameNonAscii: boolean;
 }
 
 export interface AssetData {
@@ -316,7 +322,13 @@ export default class Store {
       const uploadPromise = uploadAssets({
         files: [file],
         context: { blogId: parseInt(this.#params.blog_id) },
-        options,
+        options: {
+          destination: this.#options.uploadDestination,
+          extra_path: this.#options.uploadExtraPath,
+          operation_if_exists: String(this.#options.uploadOperationIfExists),
+          normalize_orientation: this.#options.uploadNormalizeOrientation ? "1" : "",
+          auto_rename_non_ascii: this.#options.uploadAutoRenameNonAscii ? "1" : ""
+        },
         requestOptions: {}
       })[0];
 

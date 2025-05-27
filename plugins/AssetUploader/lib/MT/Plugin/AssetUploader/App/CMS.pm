@@ -38,10 +38,16 @@ sub template_param_header {
             'Var', {
                 name  => $plugin->name . '_options',
                 value => {
-                    imageDefaultThumb => $blog->image_default_thumb ? JSON::true() : JSON::false(),
-                    imageDefaultWidth => ($blog->image_default_width || 0) + 0,
-                    imageDefaultAlign => $blog->image_default_align,
-                    imageDefaultPopup => $blog->image_default_popup
+                    imageDefaultThumb          => $blog->image_default_thumb ? JSON::true() : JSON::false(),
+                    imageDefaultWidth          => ($blog->image_default_width || 0) + 0,
+                    imageDefaultAlign          => ($blog->image_default_align || 'none'),
+                    imageDefaultPopup          => $blog->image_default_popup,
+                    uploadDestination          => ($blog->upload_destination                 || '%s'),
+                    uploadExtraPath            => ($blog->extra_path                         || ''),
+                    uploadAllowToChange        => (!defined $blog->allow_to_change_at_upload || $blog->allow_to_change_at_upload) ? JSON::true() : JSON::false(),
+                    uploadOperationIfExists    => ($blog->operation_if_exists                || 1) + 0,
+                    uploadNormalizeOrientation => (!defined $blog->normalize_orientation     || $blog->normalize_orientation) ? JSON::true() : JSON::false(),
+                    uploadAutoRenameNonAscii   => (!defined $blog->auto_rename_non_ascii     || $blog->auto_rename_non_ascii) ? JSON::true() : JSON::false(),
                 } });
         $tmpl->insertAfter($options, $before);
     }
