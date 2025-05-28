@@ -34,22 +34,31 @@ sub template_param_header {
         my $blog_id = $tmpl->createElement('Var', { name => $plugin->name . '_blog_id', value => $blog->id });
         $tmpl->insertAfter($blog_id, $before);
         require JSON;
-        my $options = $tmpl->createElement(
+        my $insert_options = $tmpl->createElement(
             'Var', {
-                name  => $plugin->name . '_options',
+                name  => $plugin->name . '_insert_options',
                 value => {
-                    imageDefaultThumb          => $blog->image_default_thumb ? JSON::true() : JSON::false(),
-                    imageDefaultWidth          => ($blog->image_default_width || 0) + 0,
-                    imageDefaultAlign          => ($blog->image_default_align || 'none'),
-                    imageDefaultPopup          => $blog->image_default_popup,
-                    uploadDestination          => ($blog->upload_destination                 || '%s'),
-                    uploadExtraPath            => ($blog->extra_path                         || ''),
-                    uploadAllowToChange        => (!defined $blog->allow_to_change_at_upload || $blog->allow_to_change_at_upload) ? JSON::true() : JSON::false(),
-                    uploadOperationIfExists    => ($blog->operation_if_exists                || 1) + 0,
-                    uploadNormalizeOrientation => (!defined $blog->normalize_orientation     || $blog->normalize_orientation) ? JSON::true() : JSON::false(),
-                    uploadAutoRenameNonAscii   => (!defined $blog->auto_rename_non_ascii     || $blog->auto_rename_non_ascii) ? JSON::true() : JSON::false(),
+                    imageDefaultThumb => $blog->image_default_thumb ? JSON::true() : JSON::false(),
+                    imageDefaultWidth => ($blog->image_default_width || 0) + 0,
+                    imageDefaultAlign => ($blog->image_default_align || 'none'),
+                    imageDefaultPopup => $blog->image_default_popup ? JSON::true() : JSON::false(),
                 } });
-        $tmpl->insertAfter($options, $before);
+        $tmpl->insertAfter($insert_options, $before);
+
+        my $upload_options = $tmpl->createElement(
+            'Var', {
+                name  => $plugin->name . '_upload_options',
+                value => {
+                    destination          => ($blog->upload_destination                 || '%s'),
+                    extraPath            => ($blog->extra_path                         || ''),
+                    allowToChange        => (!defined $blog->allow_to_change_at_upload || $blog->allow_to_change_at_upload) ? JSON::true() : JSON::false(),
+                    operationIfExists    => ($blog->operation_if_exists                || 1) + 0,
+                    normalizeOrientation => (!defined $blog->normalize_orientation     || $blog->normalize_orientation) ? JSON::true() : JSON::false(),
+                    autoRenameNonAscii   => (!defined $blog->auto_rename_non_ascii     || $blog->auto_rename_non_ascii) ? JSON::true() : JSON::false(),
+                    userBasename         => $app->user->basename,
+                    dirSeparator         => MT::Util::dir_separator,
+                } });
+        $tmpl->insertAfter($upload_options, $before);
     }
 }
 

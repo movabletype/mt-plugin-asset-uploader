@@ -34,6 +34,21 @@ use vars qw( %Lexicon );
     'Edit information'                               => '情報を編集',
     'Link to original image'                         => 'オリジナル画像にリンクする',
     'Creating system templates for AssetUploader...' => 'AssetUploaderで利用するシステムテンプレートを作成しています...',
+    'Options'                                        => 'オプション',
+    'Upload Destination'                             => 'アップロード先',
+    'Site Root'                                      => 'サイトパス',
+    'Archive Root'                                   => 'アーカイブパス',
+    'Custom...'                                      => 'カスタム...',
+    '_USAGE_UPLOAD'                                  => 'アップロード先には、サブディレクトリを指定することが出来ます。指定されたディレクトリが存在しない場合は、作成されます。',
+    'Upload Options'                                 => 'アップロードオプション',
+    'Rename filename'                                => 'ファイル名の変更',
+    'Rename non-ascii filename automatically'        => '日本語ファイル名を自動で変換する',
+    'Operation for a file exists'                    => '既存ファイルの処理',
+    'Upload and rename'                              => '既存のファイルを残して、別のファイル名でアップロードする',
+    'Overwrite existing file'                        => '既存のファイルを上書きする',
+    'Cancel upload'                                  => 'アップロードしない',
+    'Normalize orientation'                          => '画像向きの修正',
+    'Enable orientation normalization'               => '画像の向きを自動的に修正する',
 );
 
 1;

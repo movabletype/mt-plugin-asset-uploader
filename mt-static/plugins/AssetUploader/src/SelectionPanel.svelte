@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { ModalContent, Pager } from "@movabletype/svelte-components";
   import type { Asset } from "@movabletype/app/object";
-  import UploadOptions from "./UploadOptions.svelte";
+  import UploadOptionsPanel from "./UploadOptionsPanel.svelte";
   import { getAssetModalContext } from "./context";
   import Store from "./store";
-  import type { UploadOptions as StoreUploadOptions, AssetData } from "./store";
+  import type { Options, UploadOptions, AssetData } from "./store";
   import alignLeftIcon from "../assets/ic_alignleft.svg?raw";
   import alignCenterIcon from "../assets/ic_aligncenter.svg?raw";
   import alignRightIcon from "../assets/ic_alignright.svg?raw";
@@ -13,9 +12,13 @@
 
   let {
     store,
+    options,
+    uploadOptions,
     selectMetaData
   }: {
     store: Store;
+    options: Options;
+    uploadOptions: UploadOptions;
     selectMetaData: boolean;
   } = $props();
 
@@ -30,6 +33,8 @@
     store.search(searchText);
   }
 
+  // eslint-disable-next-line svelte/no-unused-svelte-ignore
+  // svelte-ignore non_reactive_update FIXME:
   let close: (() => void) | undefined;
 
   let showUploadOptionsView = $state(false);
@@ -45,9 +50,6 @@
     }
   });
 
-  // svelte-ignore non_reactive_update
-  let uploadOptions: StoreUploadOptions;
-
   const { insert } = getAssetModalContext();
   async function insertThenClose() {
     isInserting = true;
@@ -58,17 +60,29 @@
         insertOptions: data
       }))
     );
-    await insert(insertData);
+    if (insertData.some((data) => data.asset === undefined)) {
+      isInserting = false;
+      return;
+    }
+
+    await insert(insertData as { asset: Asset; insertOptions: AssetData }[]);
 
     close?.();
   }
 
-  // svelte-ignore non_reactive_update
-  let fileInput: HTMLInputElement;
-  onMount(() => {
-    fileInput.addEventListener("change", async () => {
-      store.upload(fileInput.files, uploadOptions);
-    });
+  let fileInput = $state<HTMLInputElement>();
+  const onFileInputChange = async () => {
+    store.upload(fileInput?.files, uploadOptions);
+  };
+  $effect(() => {
+    if (!fileInput) {
+      return;
+    }
+    const fi = fileInput;
+    fi.addEventListener("change", onFileInputChange);
+    return () => {
+      fi.removeEventListener("change", onFileInputChange);
+    };
   });
 
   let draggingContainer = $state<HTMLDivElement>();
@@ -127,7 +141,7 @@
           <div class="col row">
             <div class="col-auto">
               <input bind:this={fileInput} type="file" multiple class="d-none" />
-              <button type="button" class="btn btn-default" onclick={() => fileInput.click()}
+              <button type="button" class="btn btn-default" onclick={() => fileInput?.click()}
                 >{window.trans("Upload")}</button
               >
             </div>
@@ -141,15 +155,13 @@
             </div>
           </div>
           <div class="col-auto text-right">
-            {#if false}
-              <button
-                type="button"
-                class="btn btn-default"
-                onclick={() => {
-                  showUploadOptionsView = true;
-                }}>{window.trans("Settings")}</button
-              >
-            {/if}
+            <button
+              type="button"
+              class="btn btn-default"
+              onclick={() => {
+                showUploadOptionsView = true;
+              }}>{window.trans("Options")}</button
+            >
           </div>
         </div>
         <div class="row p-3">
@@ -329,43 +341,56 @@
                       <label class="form-label" for="asset-uploader-width"
                         >{window.trans("Align")}</label
                       >
-                      <div class="btn-group w-100 align-button-group">
-                        <button
-                          type="button"
-                          class="btn btn-default"
-                          class:active-align={asset.align === "left"}
-                          onclick={updateAlign(asset.id, "left")}
-                          aria-label={window.trans("Align left")}
+                      <div>
+                        <div
+                          class="btn-group align-button-group"
+                          class:w-100={options.imageSupportedAligns?.length === 4}
                         >
-                          {@html alignLeftIcon}
-                        </button>
-                        <button
-                          type="button"
-                          class="btn btn-default"
-                          class:active-align={asset.align === "center"}
-                          onclick={updateAlign(asset.id, "center")}
-                          aria-label={window.trans("Align center")}
-                        >
-                          {@html alignCenterIcon}
-                        </button>
-                        <button
-                          type="button"
-                          class="btn btn-default"
-                          class:active-align={asset.align === "right"}
-                          onclick={updateAlign(asset.id, "right")}
-                          aria-label={window.trans("Align right")}
-                        >
-                          {@html alignRightIcon}
-                        </button>
-                        <button
-                          type="button"
-                          class="btn btn-default"
-                          class:active-align={asset.align === "none"}
-                          onclick={updateAlign(asset.id, "none")}
-                          aria-label={window.trans("Align none")}
-                        >
-                          {@html alignNoneIcon}
-                        </button>
+                          {#if options.imageSupportedAligns?.includes("left")}
+                            <button
+                              type="button"
+                              class="btn btn-default"
+                              class:active-align={asset.align === "left"}
+                              onclick={updateAlign(asset.id, "left")}
+                              aria-label={window.trans("Align left")}
+                            >
+                              {@html alignLeftIcon}
+                            </button>
+                          {/if}
+                          {#if options.imageSupportedAligns?.includes("center")}
+                            <button
+                              type="button"
+                              class="btn btn-default"
+                              class:active-align={asset.align === "center"}
+                              onclick={updateAlign(asset.id, "center")}
+                              aria-label={window.trans("Align center")}
+                            >
+                              {@html alignCenterIcon}
+                            </button>
+                          {/if}
+                          {#if options.imageSupportedAligns?.includes("right")}
+                            <button
+                              type="button"
+                              class="btn btn-default"
+                              class:active-align={asset.align === "right"}
+                              onclick={updateAlign(asset.id, "right")}
+                              aria-label={window.trans("Align right")}
+                            >
+                              {@html alignRightIcon}
+                            </button>
+                          {/if}
+                          {#if options.imageSupportedAligns?.includes("none")}
+                            <button
+                              type="button"
+                              class="btn btn-default"
+                              class:active-align={asset.align === "none"}
+                              onclick={updateAlign(asset.id, "none")}
+                              aria-label={window.trans("Align none")}
+                            >
+                              {@html alignNoneIcon}
+                            </button>
+                          {/if}
+                        </div>
                       </div>
                     </div>
                   {/if}
@@ -397,7 +422,7 @@
     </svelte:fragment>
   </ModalContent>
 {:else}
-  <UploadOptions bind:showUploadOptionsView bind:uploadOptions />
+  <UploadOptionsPanel bind:showUploadOptionsView bind:uploadOptions />
 {/if}
 
 <style>

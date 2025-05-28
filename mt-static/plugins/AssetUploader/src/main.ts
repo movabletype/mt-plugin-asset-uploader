@@ -1,12 +1,12 @@
 import { mount } from "svelte";
 import AssetModal from "./AssetModal.svelte";
-import type { InitialSelectedAssetData, Options } from "./AssetModal.svelte";
+import type { InitialSelectedAssetData, Options, UploadOptions } from "./AssetModal.svelte";
 import type { InsertMethod } from "./context";
 import { asHtml } from "./util/asset";
 
-const options = JSON.parse(
-  document.querySelector<HTMLScriptElement>("#asset-uploader-script")?.dataset.options || "{}"
-) as Options;
+const script = document.querySelector<HTMLScriptElement>("#asset-uploader-script")!;
+const options = JSON.parse(script.dataset.insertOptions || "{}") as Options;
+const uploadOptions = JSON.parse(script.dataset.uploadOptions || "{}") as UploadOptions;
 
 interface AssetUploaderOpenOptions {
   field: string;
@@ -15,6 +15,7 @@ interface AssetUploaderOpenOptions {
   initialSelectedData?: InitialSelectedAssetData[];
   params?: Record<string, string>;
   insert?: (data: Record<string, string>[]) => Promise<void>;
+  options?: Partial<Options>;
 }
 
 interface AssetUploader {
@@ -101,7 +102,11 @@ function getInsertFieldAsset(field: string): InsertMethod {
         multiSelect: opts.multiSelect,
         initialSelectedData: opts.initialSelectedData,
         params: opts.params || {},
-        options
+        options: {
+          ...options,
+          ...opts.options
+        },
+        uploadOptions
       }
     });
   }
@@ -120,7 +125,8 @@ window.jQuery.fn.mtModal.open = async (url: string, opts: unknown) => {
         selectMetaData: true,
         multiSelect: true,
         params,
-        options
+        options,
+        uploadOptions
       }
     });
   } else {
@@ -157,6 +163,7 @@ document.querySelectorAll<HTMLAnchorElement>(".mt-modal-open").forEach((elm) => 
           insert: getInsertFieldAsset(params.edit_field),
           params,
           options,
+          uploadOptions,
           initialSelectedData
         }
       });

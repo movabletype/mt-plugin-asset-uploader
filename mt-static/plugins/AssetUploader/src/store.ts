@@ -7,14 +7,9 @@ import { PagerData } from "@movabletype/svelte-components";
 export interface Options {
   imageDefaultThumb: boolean;
   imageDefaultWidth: number;
-  imageDefaultAlign: string;
-  imageDefaultPopup: string;
-  uploadDestination: string;
-  uploadExtraPath: string;
-  uploadAllowToChange: boolean;
-  uploadOperationIfExists: number;
-  uploadNormalizeOrientation: boolean;
-  uploadAutoRenameNonAscii: boolean;
+  imageDefaultAlign: "left" | "center" | "right" | "none";
+  imageDefaultPopup: boolean;
+  imageSupportedAligns?: ("left" | "center" | "right" | "none")[];
 }
 
 export interface AssetData {
@@ -27,13 +22,18 @@ export interface AssetData {
   width: number | undefined;
   linkToOriginal: boolean;
   align: "left" | "center" | "right" | "none";
-  uploadPromise?: ReturnType<MTAPIMap["uploadAssets"]>[0];
+  uploadPromise?: Promise<void>;
 }
 export type InitialSelectedAssetData = {
   id: string;
 } & Partial<AssetData>;
 
-export type UploadOptions = Parameters<MTAPIMap["uploadAssets"]>[0]["options"];
+type UploadAssetsAPIOptions = Parameters<MTAPIMap["uploadAssets"]>[0]["options"];
+export interface UploadOptions extends UploadAssetsAPIOptions {
+  allowToChange: boolean;
+  userBasename: string;
+  dirSeparator: string;
+}
 
 export default class Store {
   status: "loading" | "loaded" | "error" = "loading";
@@ -79,6 +79,7 @@ export default class Store {
       this.setPagerData = set;
     });
 
+    options.imageSupportedAligns ??= ["left", "center", "right", "none"];
     this.#params = params;
     this.#multiSelect = multiSelect;
     this.#options = options;
@@ -91,6 +92,15 @@ export default class Store {
     return (this.#loadPromise = lastLoadPromise.then(() => Asset.load(...args)) as ReturnType<
       typeof Asset.load<Asset>
     >);
+  }
+
+  #defaultAssetDataOptions() {
+    return {
+      linkToOriginal: this.#options.imageDefaultPopup,
+      align: this.#options.imageSupportedAligns?.includes(this.#options.imageDefaultAlign)
+        ? this.#options.imageDefaultAlign
+        : "none"
+    };
   }
 
   async #updateObjects() {
@@ -123,8 +133,7 @@ export default class Store {
               this.#options.imageDefaultThumb && this.#options.imageDefaultWidth < assets[j].width
                 ? this.#options.imageDefaultWidth
                 : assets[j].width,
-            linkToOriginal: true,
-            align: "none"
+            ...this.#defaultAssetDataOptions()
           } as AssetData;
         }
       }
@@ -233,8 +242,7 @@ export default class Store {
                 this.#options.imageDefaultThumb && this.#options.imageDefaultWidth < asset.width
                   ? this.#options.imageDefaultWidth
                   : asset.width,
-              linkToOriginal: true,
-              align: "none",
+              ...this.#defaultAssetDataOptions(),
               ...data,
               status: "loaded",
               selected: true,
@@ -271,8 +279,7 @@ export default class Store {
               this.#options.imageDefaultThumb && this.#options.imageDefaultWidth < asset.width
                 ? this.#options.imageDefaultWidth
                 : asset.width,
-            linkToOriginal: true,
-            align: "none"
+            ...this.#defaultAssetDataOptions()
           }) as AssetData
       )
     );
@@ -322,13 +329,7 @@ export default class Store {
       const uploadPromise = uploadAssets({
         files: [file],
         context: { blogId: parseInt(this.#params.blog_id) },
-        options: {
-          destination: this.#options.uploadDestination,
-          extra_path: this.#options.uploadExtraPath,
-          operation_if_exists: String(this.#options.uploadOperationIfExists),
-          normalize_orientation: this.#options.uploadNormalizeOrientation ? "1" : "",
-          auto_rename_non_ascii: this.#options.uploadAutoRenameNonAscii ? "1" : ""
-        },
+        options,
         requestOptions: {}
       })[0];
 
@@ -352,43 +353,43 @@ export default class Store {
           this.#options.imageDefaultThumb && this.#options.imageDefaultWidth < width
             ? this.#options.imageDefaultWidth
             : width,
-        linkToOriginal: true,
-        align: "none",
-        uploadPromise
+        ...this.#defaultAssetDataOptions()
       };
-      this.#stash.unshift(assetData);
-      this.#offset++;
-      this.#totalCount++;
+      assetData.uploadPromise = uploadPromise
+        .then(async (res) => {
+          const resData = await res.json();
+          if (resData.error !== null) {
+            throw new Error(resData.error);
+          } else if ("cancel" in resData.result) {
+            throw new Error(resData.result.cancel);
+          }
 
-      uploadPromise
-        .then(() => {
           assetData.status = "loaded";
-          // const {
-          //   result: { asset }
-          // } = await res.json();
-          // Object.assign(assetData.asset, asset);
+          Object.assign(assetData.asset, resData.result.asset);
         })
-        .catch(() => {
+        .catch((error: Error) => {
+          alert(error.message);
           this.#stash = this.#stash.filter((data) => data.id !== assetData.id);
           this.#offset--;
           this.#totalCount--;
+          this.setSelectedObjects([]);
+          this.#updateObjects();
         });
+
+      this.#stash.unshift(assetData);
+      this.#offset++;
+      this.#totalCount++;
 
       this.setSelectedObjects(this.#stash.filter((data) => data.selected));
       this.#updateObjects();
     }
   }
 
-  static async getProcessedAsset(data: AssetData) {
-    if (data.uploadPromise) {
-      const res = await (await data.uploadPromise).json();
-      const asset = data.asset;
-      asset.id = res.result.asset.id;
-      asset.blog_id = res.result.asset.blog_id;
-      delete data.uploadPromise;
-      return asset;
-    } else {
-      return data.asset;
+  static async getProcessedAsset(data: AssetData): Promise<Asset | undefined> {
+    await data.uploadPromise;
+    if (data.status === "error") {
+      return;
     }
+    return data.asset;
   }
 }

@@ -12,6 +12,9 @@ use warnings;
 use base 'MT::Plugin::AssetUploader::L10N';
 use vars qw( %Lexicon );
 
-%Lexicon = ();
+%Lexicon = (
+    '_USAGE_UPLOAD' => 'You can upload the file to a subdirectory in the selected path. The subdirectory will be created if it does not exist.',
+
+);
 
 1;
