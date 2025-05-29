@@ -1,5 +1,8 @@
 package MT::Plugin::AssetUploader::App::Upgrade;
 
+use strict;
+use warnings;
+
 use MT::Util;
 use MT::Plugin::AssetUploader qw(plugin);
 
