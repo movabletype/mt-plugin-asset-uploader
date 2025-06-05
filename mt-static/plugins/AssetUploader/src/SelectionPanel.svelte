@@ -138,20 +138,26 @@
         bind:this={draggingContainer}
       >
         <div class="row">
-          <div class="col row">
-            <div class="col-auto">
-              <input bind:this={fileInput} type="file" multiple class="d-none" />
-              <button type="button" class="btn btn-default" onclick={() => fileInput?.click()}
-                >{window.trans("Upload")}</button
-              >
-            </div>
-            <div class="col-auto">
-              <input bind:value={searchText} type="search" class="form-control text" />
-            </div>
-            <div class="col-auto">
-              <button type="button" class="btn btn-primary" onclick={search}
-                >{window.trans("Search")}</button
-              >
+          <div class="col">
+            <div class="row gap-3 gap-md-0 g-5">
+              <div class="col-auto">
+                <input bind:this={fileInput} type="file" multiple class="d-none" />
+                <button type="button" class="btn btn-default" onclick={() => fileInput?.click()}
+                  >{window.trans("Upload")}</button
+                >
+              </div>
+              <div class="col-auto">
+                <div class="row g-4">
+                  <div class="col">
+                    <input bind:value={searchText} type="search" class="form-control text" />
+                  </div>
+                  <div class="col-auto">
+                    <button type="button" class="btn btn-primary" onclick={search}
+                      >{window.trans("Search")}</button
+                    >
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div class="col-auto text-right">
