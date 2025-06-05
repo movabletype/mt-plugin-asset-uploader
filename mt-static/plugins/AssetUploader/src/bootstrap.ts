@@ -1,8 +1,4 @@
-if (
-  /^(edit-entry|edit-page|edit-content-type-data)$/.test(
-    document.documentElement.dataset.screenId || ""
-  )
-) {
+if (!/^(edit-author)$/.test(document.documentElement.dataset.screenId || "")) {
   import("./main");
 }
 
