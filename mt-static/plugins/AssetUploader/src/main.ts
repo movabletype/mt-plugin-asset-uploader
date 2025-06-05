@@ -144,7 +144,7 @@ document.querySelectorAll<HTMLAnchorElement>(".mt-modal-open").forEach((elm) => 
     const params = Object.fromEntries(
       new URLSearchParams(elm.href.replace(/.*?\?/, "").replace(/&amp;/g, "&"))
     );
-    if (params.filter_val === "image") {
+    if (params.filter_val === "image" || params.filter_val === "1") {
       const initialSelectedData: InitialSelectedAssetData[] = [];
       const editField = params.edit_field;
       const input = document.querySelector<HTMLInputElement>(`#${editField}`);
