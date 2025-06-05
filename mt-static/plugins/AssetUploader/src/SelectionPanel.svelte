@@ -459,6 +459,7 @@
     .mt-asset-uploader-asset {
       width: 25%;
       height: 25%;
+      aspect-ratio: 1/1;
     }
   }
   .mt-asset-uploader-asset img.selected {
