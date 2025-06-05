@@ -27,7 +27,7 @@ export const asHtml = async (
   body.set("blog_id", asset.blog_id);
   body.set("id", asset.id);
   for (const [k, v] of Object.entries(options)) {
-    const value = typeof v === "boolean" ? (v ? "1" : "") : String(v);
+    const value = typeof v === "boolean" ? (v ? "1" : "") : v;
     body.set(k, value);
   }
   return (
