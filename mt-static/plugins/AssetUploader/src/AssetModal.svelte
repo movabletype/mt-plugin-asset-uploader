@@ -50,3 +50,11 @@
 <Modal id="mt-asset-uploader-modal" size="lg" on:close={close} bind:this={self}>
   <SelectionPanel {selectMetaData} {store} {options} {uploadOptions} />
 </Modal>
+
+<style>
+  @media (max-width: 992px) {
+    :global(#mt-asset-uploader-modal .modal-dialog) {
+      max-width: 800px;
+    }
+  }
+</style>

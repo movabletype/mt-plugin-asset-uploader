@@ -164,8 +164,8 @@
             >
           </div>
         </div>
-        <div class="row p-3">
-          <div class="col row">
+        <div class="row p-3 justify-content-center">
+          <div class="col-12 col-md row">
             <div class="col-12">
               <div class="row d-flex flex-wrap">
                 {#each $objects as asset ((asset.selected, asset.id))}
@@ -195,14 +195,14 @@
             {#if editingAsset}
               <div class="mt-asset-uploader-insert-options-item">
                 <div class="row g-4">
-                  <div class="col-5">
+                  <div class="col-auto col-md-5">
                     <img
                       src={editingAsset.asset.url}
                       class="mw-100 mt-asset-uploader-insert-options-item-preview"
                       alt={editingAsset.asset.label}
                     />
                   </div>
-                  <div class="col-7">
+                  <div class="col-auto col-md-7">
                     <div>
                       {editingAsset.label}
                     </div>
@@ -258,14 +258,14 @@
               {#each $selectedObjects as asset (asset.id)}
                 <div class="mt-asset-uploader-insert-options-item">
                   <div class="row g-4">
-                    <div class="col-5">
+                    <div class="col-auto col-md-5">
                       <img
                         src={asset.asset.url}
                         class="mw-100 mt-asset-uploader-insert-options-item-preview"
                         alt={asset.asset.label}
                       />
                     </div>
-                    <div class="col-7">
+                    <div class="col-auto col-md-7">
                       <div>
                         {asset.asset.label}
                       </div>
@@ -451,9 +451,15 @@
     outline-offset: -3px;
     object-fit: cover;
     object-position: center center;
-    width: 126px;
-    height: 126px;
+    width: 100%;
+    height: 100%;
     background: url(data:image/gif;base64,R0lGODlhEAAQAPEBAAAAAL+/v////wAAACH5BAAAAAAALAAAAAAQABAAAAIfjG+iq4jM3IFLJipswNly/XkcBpIiVaInlLJr9FZWAQA7);
+  }
+  @media (max-width: 767.98px) {
+    .mt-asset-uploader-asset {
+      width: 25%;
+      height: 25%;
+    }
   }
   .mt-asset-uploader-asset img.selected {
     outline: 3px solid #0176bf;
@@ -462,6 +468,17 @@
     width: 245px;
     height: 460px;
     overflow-y: auto;
+  }
+  @media (max-width: 800px) {
+    .mt-asset-uploader-insert-options {
+      width: 29%;
+    }
+  }
+  @media (max-width: 767.98px) {
+    .mt-asset-uploader-insert-options {
+      height: auto;
+      width: 100%;
+    }
   }
   .mt-asset-uploader-insert-options-item {
     margin-bottom: 10px;
@@ -477,8 +494,20 @@
     background-color: #e9ecef;
     box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   }
+  .align-button-group :global(svg) {
+    width: 100%;
+    height: 100%;
+    max-width: 32px;
+    max-height: 32px;
+  }
+
   input[type="search"] {
     width: 10rem;
+  }
+  @media (max-width: 767.98px) {
+    input[type="search"] {
+      width: 5rem;
+    }
   }
   textarea {
     field-sizing: content;
