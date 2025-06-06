@@ -328,7 +328,7 @@ export default class Store {
 
       const uploadPromise = uploadAssets({
         files: [file],
-        context: { blogId: parseInt(this.#params.blog_id) },
+        context: { blogId: parseInt(this.#blogId()) },
         options,
         requestOptions: {}
       })[0];
