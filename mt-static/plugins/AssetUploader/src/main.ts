@@ -8,6 +8,8 @@ const script = document.querySelector<HTMLScriptElement>("#asset-uploader-script
 const options = JSON.parse(script.dataset.insertOptions || "{}") as Options;
 const uploadOptions = JSON.parse(script.dataset.uploadOptions || "{}") as UploadOptions;
 const canUpload = script.dataset.canUpload === "1";
+const blogId = script.dataset.blogId ?? "0";
+const magicToken = script.dataset.magicToken ?? "";
 
 interface AssetUploaderOpenOptions {
   field: string;
@@ -87,6 +89,50 @@ function getInsertFieldAsset(field: string): InsertMethod {
   };
 }
 
+function getInsertContentFieldAsset(fieldId: string): InsertMethod {
+  return async (data) => {
+    const assets = data.map(({ asset }) => asset);
+
+    const body = new FormData();
+    body.set("__mode", "dialog_insert_options");
+    body.set("_type", "asset");
+    body.set("magic_token", magicToken);
+    body.set("dialog_view", "1");
+    body.set("no_insert", "1");
+    body.set("dialog", "1");
+    body.set("content_field_id", fieldId);
+    body.set("force_insert", "1");
+    body.set("entry_insert", "1");
+
+    body.set("blog_id", blogId);
+    body.set("id", assets.map(({ id }) => id).join(","));
+
+    fetch(window.CMSScriptURI, {
+      method: "POST",
+      body,
+      headers: {
+        "X-Requested-With": "XMLHttpRequest"
+      }
+    })
+      .then((resp) => resp.text())
+      .then((html) => {
+        const iframe = document.createElement("iframe");
+        iframe.srcdoc = html;
+        iframe.style.display = "none";
+        document.body.appendChild(iframe);
+        iframe.onload = () => {
+          const iframeWindow = iframe.contentWindow;
+          iframeWindow?.jQuery.ready(() => {
+            iframe.remove();
+          });
+        };
+      })
+      .catch((err) => {
+        window.alert(err.message);
+      });
+  };
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (window.MT as any).AssetUploader = {
   open: (opts: AssetUploaderOpenOptions) => {
@@ -148,27 +194,40 @@ document.querySelectorAll<HTMLAnchorElement>(".mt-modal-open").forEach((elm) => 
       new URLSearchParams(elm.href.replace(/.*?\?/, "").replace(/&amp;/g, "&"))
     );
     if (params.filter_val === "image" || params.filter_val === "1") {
+      let allowUpload = canUpload;
+      let multiSelect = false;
+
       const initialSelectedData: InitialSelectedAssetData[] = [];
-      const editField = params.edit_field;
-      const input = document.querySelector<HTMLInputElement>(`#${editField}`);
-      if (input) {
+      const editField = params.edit_field as string | undefined;
+      const contentFieldId = params.content_field_id as string | undefined;
+      if (editField) {
+        const input = document.querySelector<HTMLInputElement>(`#${editField}`) as HTMLInputElement;
         const m = input.value.match(/mt:asset-id="(\d+)"/);
         if (m) {
           initialSelectedData.push({
             id: m[1]
           });
         }
+      } else if (contentFieldId) {
+        const input = document.querySelector<HTMLInputElement>(
+          `#asset-field-${contentFieldId}`
+        ) as HTMLInputElement;
+        allowUpload &&= input.dataset.mtAssetUploaderAllowUpload === "1";
+        multiSelect = input.dataset.mtMultiple === "1";
       }
 
       mount(AssetModal, {
         target: document.body,
         props: {
-          insert: getInsertFieldAsset(params.edit_field),
+          insert: editField
+            ? getInsertFieldAsset(editField)
+            : getInsertContentFieldAsset(contentFieldId as string),
+          multiSelect,
           params,
           options,
           uploadOptions,
           initialSelectedData,
-          allowUpload: canUpload
+          allowUpload
         }
       });
     } else {

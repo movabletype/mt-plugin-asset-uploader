@@ -62,6 +62,18 @@ sub template_param_header {
     }
 }
 
+sub template_param_edit_content_data {
+    my ($cb, $app, $param, $tmpl) = @_;
+    for my $field (@{ $param->{fields} }) {
+        next unless ($field->{asset_type_for_field} || '') eq 'image';
+        if ($field->{options}{allow_upload}) {
+            # FIXME: adding data attribute to "multiple" is not the original usage
+            $field->{multiple} ||= '';
+            $field->{multiple} .= ' data-mt-asset-uploader-allow-upload="1"';
+        }
+    }
+}
+
 sub as_html {
     my $app = shift;
 
