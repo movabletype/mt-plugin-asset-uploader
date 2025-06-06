@@ -18,6 +18,7 @@
     multiSelect = false,
     params,
     options,
+    allowUpload = true,
     uploadOptions: _uploadOptions,
     initialSelectedData
   }: {
@@ -26,6 +27,7 @@
     multiSelect?: boolean;
     params: Record<string, string>;
     options: Options;
+    allowUpload?: boolean;
     uploadOptions: Readonly<UploadOptions>;
     initialSelectedData?: InitialSelectedAssetData[];
   } = $props();
@@ -48,7 +50,7 @@
 </script>
 
 <Modal id="mt-asset-uploader-modal" size="lg" on:close={close} bind:this={self}>
-  <SelectionPanel {selectMetaData} {store} {options} {uploadOptions} />
+  <SelectionPanel {selectMetaData} {store} {options} {allowUpload} {uploadOptions} />
 </Modal>
 
 <style>

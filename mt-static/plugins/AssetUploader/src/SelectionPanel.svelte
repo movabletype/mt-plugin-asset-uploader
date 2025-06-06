@@ -13,11 +13,13 @@
   let {
     store,
     options,
+    allowUpload,
     uploadOptions,
     selectMetaData
   }: {
     store: Store;
     options: Options;
+    allowUpload: boolean;
     uploadOptions: UploadOptions;
     selectMetaData: boolean;
   } = $props();
@@ -97,11 +99,17 @@
 
   function dropHandler(ev: DragEvent) {
     ev.preventDefault();
+    if (!allowUpload) {
+      return;
+    }
     isDragging = false;
     store.upload(ev.dataTransfer?.files, uploadOptions);
   }
 
   function dragEnterHandler() {
+    if (!allowUpload) {
+      return;
+    }
     isDragging = true;
     function documentDragEnterHandler(ev: DragEvent) {
       const target = ev.target;
@@ -140,12 +148,14 @@
         <div class="row">
           <div class="col">
             <div class="row gap-3 gap-md-0 g-5">
-              <div class="col-auto">
-                <input bind:this={fileInput} type="file" multiple class="d-none" />
-                <button type="button" class="btn btn-default" onclick={() => fileInput?.click()}
-                  >{window.trans("Upload")}</button
-                >
-              </div>
+              {#if allowUpload}
+                <div class="col-auto">
+                  <input bind:this={fileInput} type="file" multiple class="d-none" />
+                  <button type="button" class="btn btn-default" onclick={() => fileInput?.click()}
+                    >{window.trans("Upload")}</button
+                  >
+                </div>
+              {/if}
               <div class="col-auto">
                 <div class="row g-4">
                   <div class="col">
@@ -160,15 +170,17 @@
               </div>
             </div>
           </div>
-          <div class="col-auto text-right">
-            <button
-              type="button"
-              class="btn btn-default"
-              onclick={() => {
-                showUploadOptionsView = true;
-              }}>{window.trans("Options")}</button
-            >
-          </div>
+          {#if allowUpload}
+            <div class="col-auto text-right">
+              <button
+                type="button"
+                class="btn btn-default"
+                onclick={() => {
+                  showUploadOptionsView = true;
+                }}>{window.trans("Options")}</button
+              >
+            </div>
+          {/if}
         </div>
         <div class="row p-3 justify-content-center">
           <div class="col-12 col-md row">

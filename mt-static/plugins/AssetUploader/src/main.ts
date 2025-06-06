@@ -7,6 +7,7 @@ import { asHtml } from "./util/asset";
 const script = document.querySelector<HTMLScriptElement>("#asset-uploader-script")!;
 const options = JSON.parse(script.dataset.insertOptions || "{}") as Options;
 const uploadOptions = JSON.parse(script.dataset.uploadOptions || "{}") as UploadOptions;
+const canUpload = script.dataset.canUpload === "1";
 
 interface AssetUploaderOpenOptions {
   field: string;
@@ -106,7 +107,8 @@ function getInsertFieldAsset(field: string): InsertMethod {
           ...options,
           ...opts.options
         },
-        uploadOptions
+        uploadOptions,
+        allowUpload: canUpload
       }
     });
   }
@@ -126,7 +128,8 @@ window.jQuery.fn.mtModal.open = async (url: string, opts: unknown) => {
         multiSelect: true,
         params,
         options,
-        uploadOptions
+        uploadOptions,
+        allowUpload: canUpload
       }
     });
   } else {
@@ -164,7 +167,8 @@ document.querySelectorAll<HTMLAnchorElement>(".mt-modal-open").forEach((elm) => 
           params,
           options,
           uploadOptions,
-          initialSelectedData
+          initialSelectedData,
+          allowUpload: canUpload
         }
       });
     } else {
