@@ -17,6 +17,17 @@ use MT::Plugin::AssetUploader qw(plugin);
 sub template_param_header {
     my ($cb, $app, $param, $tmpl) = @_;
     my $plugin      = plugin();
+
+    my $html_head = $tmpl->getElementsByName("html_head")
+        or return;
+    my $html_head_before = $html_head->[0];
+
+    my $app_dist_tokens = $plugin->load_tmpl("app_dist.tmpl")->tokens;
+    foreach my $t (@$app_dist_tokens) {
+        $tmpl->insertBefore($t, $html_head_before);
+        $html_head_before = $t;
+    }
+
     my $js_includes = $tmpl->getElementsByName("js_include")
         or return;
     my $before = $js_includes->[0];
