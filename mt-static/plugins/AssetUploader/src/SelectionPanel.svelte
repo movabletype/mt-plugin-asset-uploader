@@ -3,36 +3,39 @@
   import type { Asset } from "@movabletype/app/object";
   import UploadOptionsPanel from "./UploadOptionsPanel.svelte";
   import { getAssetModalContext } from "./context";
-  import Store from "./store";
-  import type { Options, UploadOptions, AssetData } from "./store";
+  import AssetDataStore from "./assetDataStore";
+  import type { Options, UploadOptions, AssetData } from "./assetDataStore";
   import alignLeftIcon from "../assets/ic_alignleft.svg?raw";
   import alignCenterIcon from "../assets/ic_aligncenter.svg?raw";
   import alignRightIcon from "../assets/ic_alignright.svg?raw";
   import alignNoneIcon from "../assets/ic_alignnone.svg?raw";
+  import { uploadOptions } from "./uploadOptionsStore";
 
   let {
-    store,
+    assetDataStore,
     options,
     allowUpload,
-    uploadOptions,
+    uploadOptions: initialUploadOptions,
     selectMetaData
   }: {
-    store: Store;
+    assetDataStore: AssetDataStore;
     options: Options;
     allowUpload: boolean;
     uploadOptions: UploadOptions;
     selectMetaData: boolean;
   } = $props();
 
-  let objects = store.objects;
-  let selectedObjects = store.selectedObjects;
-  let pagerData = store.pagerData;
+  uploadOptions.set(initialUploadOptions);
+
+  let objects = assetDataStore.objects;
+  let selectedObjects = assetDataStore.selectedObjects;
+  let pagerData = assetDataStore.pagerData;
   let isDragging = $state(false);
   let isInserting = $state(false);
 
   let searchText = $state("");
   function search() {
-    store.search(searchText);
+    assetDataStore.search(searchText);
   }
 
   // eslint-disable-next-line svelte/no-unused-svelte-ignore
@@ -58,7 +61,7 @@
 
     const insertData = await Promise.all(
       $selectedObjects.map(async (data) => ({
-        asset: await Store.getProcessedAsset(data),
+        asset: await AssetDataStore.getProcessedAsset(data),
         insertOptions: data
       }))
     );
@@ -74,7 +77,7 @@
 
   let fileInput = $state<HTMLInputElement>();
   const onFileInputChange = async () => {
-    store.upload(fileInput?.files, uploadOptions);
+    assetDataStore.upload(fileInput?.files, $uploadOptions);
   };
   $effect(() => {
     if (!fileInput) {
@@ -103,7 +106,7 @@
       return;
     }
     isDragging = false;
-    store.upload(ev.dataTransfer?.files, uploadOptions);
+    assetDataStore.upload(ev.dataTransfer?.files, $uploadOptions);
   }
 
   function dragEnterHandler() {
@@ -191,7 +194,7 @@
                     class="p-2 col-3 mt-asset-uploader-asset"
                     onclick={(ev) => {
                       ev.preventDefault();
-                      store.select(asset);
+                      assetDataStore.select(asset);
                     }}
                     aria-label={asset.asset.label}
                     href={asset.asset.url}
@@ -440,7 +443,7 @@
     </svelte:fragment>
   </ModalContent>
 {:else}
-  <UploadOptionsPanel bind:showUploadOptionsView bind:uploadOptions />
+  <UploadOptionsPanel bind:showUploadOptionsView />
 {/if}
 
 <style>

@@ -35,7 +35,7 @@ export interface UploadOptions extends uploadAssetAPIOptions {
   dirSeparator: string;
 }
 
-export default class Store {
+export default class AssetDataStore {
   status: "loading" | "loaded" | "error" = "loading";
   #options: Options;
   #params: Record<string, string>;
