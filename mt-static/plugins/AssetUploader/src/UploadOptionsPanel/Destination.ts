@@ -19,6 +19,7 @@ customElements.define(
     }
   }
 );
-window.MT.UI.Component.add("asset-upload-options-destination").then(({ resolve }) => {
-  resolve("mt-asset-uploader-upload-destination");
-});
+window.MT.UI.Component.add(
+  "asset-upload-options-destination",
+  "mt-asset-uploader-upload-destination"
+);

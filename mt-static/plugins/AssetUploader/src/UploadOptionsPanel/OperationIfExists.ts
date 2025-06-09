@@ -19,6 +19,4 @@ customElements.define(
     }
   }
 );
-window.MT.UI.Component.add("asset-upload-options-common").then(({ resolve }) => {
-  resolve("mt-asset-uploader-operation-if-exists");
-});
+window.MT.UI.Component.add("asset-upload-options-common", "mt-asset-uploader-operation-if-exists");
