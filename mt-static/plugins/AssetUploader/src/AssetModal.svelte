@@ -1,6 +1,6 @@
 <script module>
   import type { InsertMethod } from "./context";
-  import type { InitialSelectedAssetData, Options, UploadOptions } from "./store";
+  import type { InitialSelectedAssetData, Options, UploadOptions } from "./assetDataStore";
   // eslint-disable-next-line no-import-assign
   export type { InitialSelectedAssetData, Options, UploadOptions };
 </script>
@@ -10,7 +10,7 @@
   import { Modal } from "@movabletype/svelte-components";
   import SelectionPanel from "./SelectionPanel.svelte";
   import { setAssetModalContext } from "./context";
-  import Store from "./store";
+  import AssetDataStore from "./assetDataStore";
 
   let {
     insert,
@@ -41,7 +41,7 @@
 
   setAssetModalContext({ insert, params });
 
-  const store = new Store({
+  const assetDataStore = new AssetDataStore({
     multiSelect,
     params,
     options,
@@ -50,7 +50,7 @@
 </script>
 
 <Modal id="mt-asset-uploader-modal" size="lg" on:close={close} bind:this={self}>
-  <SelectionPanel {selectMetaData} {store} {options} {allowUpload} {uploadOptions} />
+  <SelectionPanel {selectMetaData} {assetDataStore} {options} {allowUpload} {uploadOptions} />
 </Modal>
 
 <style>

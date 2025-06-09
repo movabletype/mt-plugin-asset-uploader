@@ -28,14 +28,14 @@ export type InitialSelectedAssetData = {
   id: string;
 } & Partial<AssetData>;
 
-type UploadAssetsAPIOptions = Parameters<MTAPIMap["uploadAssets"]>[0]["options"];
-export interface UploadOptions extends UploadAssetsAPIOptions {
+type uploadAssetAPIOptions = Parameters<MTAPIMap["uploadAsset"]>[0]["options"];
+export interface UploadOptions extends uploadAssetAPIOptions {
   allowToChange: boolean;
   userBasename: string;
   dirSeparator: string;
 }
 
-export default class Store {
+export default class AssetDataStore {
   status: "loading" | "loaded" | "error" = "loading";
   #options: Options;
   #params: Record<string, string>;
@@ -316,7 +316,7 @@ export default class Store {
       return;
     }
 
-    const uploadAssets = await window.MT.import("uploadAssets");
+    const uploadAsset = await window.MT.import("uploadAsset");
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const url = URL.createObjectURL(file);
@@ -326,12 +326,12 @@ export default class Store {
         img.src = url;
       });
 
-      const uploadPromise = uploadAssets({
-        files: [file],
+      const uploadPromise = uploadAsset({
+        file,
         context: { blogId: parseInt(this.#blogId()) },
         options,
         requestOptions: {}
-      })[0];
+      });
 
       const assetData: AssetData = {
         id: `upload-${Math.random().toString(36)}`,
