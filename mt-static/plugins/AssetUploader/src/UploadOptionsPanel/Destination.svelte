@@ -51,7 +51,8 @@
     }
   ];
   let useCustomDestination = $state(
-    $uploadOptions.destination === "" || options.every((option) => option.value !== $uploadOptions.destination)
+    $uploadOptions.destination === "" ||
+      options.every((option) => option.value !== $uploadOptions.destination)
   );
 </script>
 
@@ -72,7 +73,8 @@
             if (value === "") {
               useCustomDestination = true;
               if ($uploadOptions.extraPath) {
-                $uploadOptions.destination += $uploadOptions.dirSeparator + $uploadOptions.extraPath;
+                $uploadOptions.destination +=
+                  $uploadOptions.dirSeparator + $uploadOptions.extraPath;
                 $uploadOptions.extraPath = "";
               }
             } else {
@@ -80,7 +82,7 @@
             }
           }}
         >
-          {#each options as option}
+          {#each options as option (option.value)}
             <option value={option.value}>{option.label}</option>
           {/each}
         </select>
