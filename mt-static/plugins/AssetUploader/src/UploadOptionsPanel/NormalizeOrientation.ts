@@ -19,6 +19,7 @@ customElements.define(
     }
   }
 );
-window.MT.UI.Component.add("asset-upload-options-common").then(({ resolve }) => {
-  resolve("mt-asset-uploader-normalize-orientation");
-});
+window.MT.UI.Component.add(
+  "asset-upload-options-common",
+  "mt-asset-uploader-normalize-orientation"
+);

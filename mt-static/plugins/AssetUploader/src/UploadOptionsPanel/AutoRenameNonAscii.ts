@@ -19,6 +19,7 @@ customElements.define(
     }
   }
 );
-window.MT.UI.Component.add("asset-upload-options-common").then(({ resolve }) => {
-  resolve("mt-asset-uploader-auto-rename-non-ascii");
-});
+window.MT.UI.Component.add(
+  "asset-upload-options-common",
+  "mt-asset-uploader-auto-rename-non-ascii"
+);
