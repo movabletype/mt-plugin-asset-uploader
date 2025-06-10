@@ -162,7 +162,7 @@ sub as_html {
         width            => $width,
         link_to_original => $link_to_original,
         align            => $align,
-        insert_options   => JSON->new->utf8->encode({
+        insert_options   => JSON->new->encode({
             alternativeText => $alternative_text,
             caption         => $caption,
             width           => $width,
