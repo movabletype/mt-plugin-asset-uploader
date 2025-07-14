@@ -16,6 +16,9 @@ applications:
       asset_uploader_as_html:
         code: $AssetUploader::MT::Plugin::AssetUploader::App::CMS::as_html
         app_mode: JSON
+      asset_uploader_site_status:
+        code: $AssetUploader::MT::Plugin::AssetUploader::App::CMS::site_status
+        app_mode: JSON
 
 list_properties:
   asset:

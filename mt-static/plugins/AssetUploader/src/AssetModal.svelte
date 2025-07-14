@@ -13,6 +13,7 @@
   import AssetDataStore from "./assetDataStore";
 
   let {
+    blogId,
     insert,
     selectMetaData = false,
     multiSelect = false,
@@ -22,6 +23,7 @@
     uploadOptions: _uploadOptions,
     initialSelectedData
   }: {
+    blogId: number;
     insert: InsertMethod;
     selectMetaData?: boolean;
     multiSelect?: boolean;
@@ -41,6 +43,34 @@
 
   setAssetModalContext({ insert, params });
 
+  let statusMessage: string = $state("");
+  $effect(() => {
+    const searchParams = new URLSearchParams();
+    searchParams.set("__mode", "asset_uploader_site_status");
+    searchParams.set("blog_id", `${blogId}`);
+
+    fetch(window.CMSScriptURI + "?" + searchParams.toString(), {
+      headers: {
+        "X-Requested-With": "XMLHttpRequest"
+      }
+    })
+      .then((resp) => {
+        if (!resp.ok) {
+          throw new Error(resp.statusText);
+        }
+        return resp.json();
+      })
+      .then((data: { error: null; result: { message: string } } | { error: string }) => {
+        if (data.error !== null) {
+          throw new Error(data.error);
+        }
+        statusMessage = data.result.message;
+      })
+      .catch((error: Error) => {
+        alert(error.message);
+      });
+  });
+
   const assetDataStore = new AssetDataStore({
     multiSelect,
     params,
@@ -50,7 +80,14 @@
 </script>
 
 <Modal id="mt-asset-uploader-modal" size="lg" on:close={close} bind:this={self}>
-  <SelectionPanel {selectMetaData} {assetDataStore} {options} {allowUpload} {uploadOptions} />
+  <SelectionPanel
+    {selectMetaData}
+    {assetDataStore}
+    {options}
+    {allowUpload}
+    {uploadOptions}
+    {statusMessage}
+  />
 </Modal>
 
 <style>

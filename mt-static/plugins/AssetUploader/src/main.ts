@@ -8,7 +8,7 @@ const script = document.querySelector<HTMLScriptElement>("#asset-uploader-script
 const options = JSON.parse(script.dataset.insertOptions || "{}") as Options;
 const uploadOptions = JSON.parse(script.dataset.uploadOptions || "{}") as UploadOptions;
 const canUpload = script.dataset.canUpload === "1";
-const blogId = script.dataset.blogId ?? "0";
+const blogId = parseInt(script.dataset.blogId ?? "0");
 const magicToken = script.dataset.magicToken ?? "";
 
 interface AssetUploaderOpenOptions {
@@ -104,7 +104,7 @@ function getInsertContentFieldAsset(fieldId: string): InsertMethod {
     body.set("force_insert", "1");
     body.set("entry_insert", "1");
 
-    body.set("blog_id", blogId);
+    body.set("blog_id", `${blogId}`);
     body.set("id", assets.map(({ id }) => id).join(","));
 
     fetch(window.CMSScriptURI, {
@@ -140,6 +140,7 @@ function getInsertContentFieldAsset(fieldId: string): InsertMethod {
     mount(AssetModal, {
       target: document.body,
       props: {
+        blogId,
         insert: insert
           ? async (data) => {
               insert(await getInsertData(data));
@@ -169,6 +170,7 @@ window.jQuery.fn.mtModal.open = async (url: string, opts: unknown) => {
     mount(AssetModal, {
       target: document.body,
       props: {
+        blogId,
         insert: getInsertHtml(params.edit_field),
         selectMetaData: true,
         multiSelect: true,
@@ -219,6 +221,7 @@ document.querySelectorAll<HTMLAnchorElement>(".mt-modal-open").forEach((elm) => 
       mount(AssetModal, {
         target: document.body,
         props: {
+          blogId,
           insert: editField
             ? getInsertFieldAsset(editField)
             : getInsertContentFieldAsset(contentFieldId as string),
