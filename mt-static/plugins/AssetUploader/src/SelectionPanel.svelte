@@ -310,35 +310,35 @@
                   </div>
                   {#if selectMetaData}
                     <div class="field field-content field-top-label mt-4">
-                      <label class="form-label" for="asset-uploader-alternative-text"
+                      <label class="form-label" for={`asset-uploader-alternative-text-${asset.id}`}
                         >{window.trans("Alternative text")}</label
                       >
                       <input
-                        id="asset-uploader-alternative-text"
+                        id={`asset-uploader-alternative-text-${asset.id}`}
                         type="text"
                         class="form-control text full"
                         bind:value={asset.alternativeText}
                       />
                     </div>
                     <div class="field field-content field-top-label mt-4">
-                      <label class="form-label" for="asset-uploader-caption"
+                      <label class="form-label" for={`asset-uploader-caption-${asset.id}`}
                         >{window.trans("Caption")}</label
                       >
                       <textarea
-                        id="asset-uploader-caption"
+                        id={`asset-uploader-caption-${asset.id}`}
                         class="form-control text full"
                         rows="1"
                         bind:value={asset.caption}
                       ></textarea>
                     </div>
                     <div class="field field-content field-top-label mt-4">
-                      <label class="form-label" for="asset-uploader-width"
+                      <label class="form-label" for={`asset-uploader-width-${asset.id}`}
                         >{window.trans("Width")}</label
                       >
                       <div class="input-group">
                         <input
                           type="number"
-                          id="asset-uploader-width"
+                          id={`asset-uploader-width-${asset.id}`}
                           class="form-control"
                           bind:value={asset.width}
                         />
@@ -349,17 +349,19 @@
                       <div class="form-check">
                         <input
                           type="checkbox"
-                          id="asset-uploader-link-to-original"
+                          id={`asset-uploader-link-to-original-${asset.id}`}
                           class="form-check-input"
                           bind:checked={asset.linkToOriginal}
                         />
-                        <label class="form-check-label" for="asset-uploader-link-to-original"
+                        <label
+                          class="form-check-label"
+                          for={`asset-uploader-link-to-original-${asset.id}`}
                           >{window.trans("Link to original image")}</label
                         >
                       </div>
                     </div>
                     <div class="field field-content field-top-label mt-4">
-                      <label class="form-label" for="asset-uploader-width"
+                      <label class="form-label" for={`asset-uploader-align-${asset.id}`}
                         >{window.trans("Align")}</label
                       >
                       <div>
