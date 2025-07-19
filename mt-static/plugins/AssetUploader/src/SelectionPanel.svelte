@@ -47,6 +47,7 @@
     asset: Asset;
     label: string;
     description: string;
+    tags: string;
   }>();
   // reset editingAsset when selectedObjects changes
   $effect(() => {
@@ -258,6 +259,17 @@
                       bind:value={editingAsset.description}
                     ></textarea>
                   </div>
+                  <div class="field field-content field-top-label mt-4">
+                    <label class="form-label" for="asset-uploader-tags"
+                      >{window.trans("Tags")}</label
+                    >
+                    <input
+                      id="asset-uploader-tags"
+                      type="text"
+                      class="form-control text full"
+                      bind:value={editingAsset.tags}
+                    />
+                  </div>
                   <div class="field field-content field-top-label mt-4 text-end">
                     <button
                       type="button"
@@ -266,7 +278,8 @@
                       onclick={() => {
                         Object.assign(editingAsset!.asset, {
                           label: editingAsset!.label,
-                          description: editingAsset!.description
+                          description: editingAsset!.description,
+                          tags: editingAsset!.tags
                         });
                         editingAsset!.asset.save();
                         editingAsset = undefined;
@@ -301,7 +314,8 @@
                             editingAsset = {
                               asset: asset.asset,
                               label: asset.asset.label,
-                              description: asset.asset.description
+                              description: asset.asset.description,
+                              tags: asset.asset.tags
                             };
                           }}>{window.trans("Edit information")}</button
                         >

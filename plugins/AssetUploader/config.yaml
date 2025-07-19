@@ -25,9 +25,9 @@ list_properties:
     asset_uploader_label:
       display: none
       html: $AssetUploader::MT::Plugin::AssetUploader::App::CMS::list_props_label_html
-    asset_uploader_description:
+    asset_uploader_tags:
       display: none
-      html: $AssetUploader::MT::Plugin::AssetUploader::App::CMS::list_props_description_html
+      bulk_html: $AssetUploader::MT::Plugin::AssetUploader::App::CMS::list_props_tags_bulk_html
     asset_uploader_url:
       display: none
       html: $AssetUploader::MT::Plugin::AssetUploader::App::CMS::list_props_url_html

@@ -342,6 +342,7 @@ export default class AssetDataStore {
           blog_id: "",
           label: file.name,
           description: "",
+          tags: "",
           width,
           height,
           url,
