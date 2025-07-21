@@ -341,12 +341,14 @@ export default class AssetDataStore {
           id: "",
           blog_id: "",
           label: file.name,
+          file_name: "",
           description: "",
           tags: "",
           width,
           height,
           url,
-          thumbnail_url: url
+          thumbnail_url: url,
+          class: "image"
         }),
         alternativeText: "",
         caption: "",
@@ -367,6 +369,7 @@ export default class AssetDataStore {
 
           assetData.status = "loaded";
           Object.assign(assetData.asset, resData.result.asset);
+          assetData.asset.file_name = resData.result.asset.filename; // fix column name mismatch
         })
         .catch((error: Error) => {
           alert(error.message);

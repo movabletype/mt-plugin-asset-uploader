@@ -3,6 +3,7 @@ import AssetModal from "./AssetModal.svelte";
 import type { InitialSelectedAssetData, Options, UploadOptions } from "./AssetModal.svelte";
 import type { InsertMethod } from "./context";
 import { asHtml } from "./util/asset";
+import { addToObjectAsset } from "./util/objectasset";
 
 const script = document.querySelector<HTMLScriptElement>("#asset-uploader-script")!;
 const options = JSON.parse(script.dataset.insertOptions || "{}") as Options;
@@ -56,6 +57,8 @@ const getInsertData = async (
 
 function getInsertHtml(field: string): InsertMethod {
   return async (data) => {
+    addToObjectAsset(data);
+
     const html = (await getInsertData(data)).map(({ html }) => html).join("");
     window.app?.insertHTML(html, field);
   };
@@ -63,6 +66,8 @@ function getInsertHtml(field: string): InsertMethod {
 
 function getInsertFieldAsset(field: string): InsertMethod {
   return async (data) => {
+    addToObjectAsset(data);
+
     const asset = data[0].asset;
 
     const resp = await asHtml(asset, {
@@ -91,6 +96,8 @@ function getInsertFieldAsset(field: string): InsertMethod {
 
 function getInsertContentFieldAsset(fieldId: string): InsertMethod {
   return async (data) => {
+    addToObjectAsset(data);
+
     const assets = data.map(({ asset }) => asset);
 
     const body = new FormData();
@@ -141,7 +148,9 @@ function getInsertContentFieldAsset(fieldId: string): InsertMethod {
       target: document.body,
       props: {
         insert: insert
-          ? async (data) => {
+          ? async (data: Parameters<InsertMethod>[0]) => {
+              addToObjectAsset(data);
+
               insert(await getInsertData(data));
             }
           : getInsertHtml(opts.field),
