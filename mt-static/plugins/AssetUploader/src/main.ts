@@ -240,7 +240,13 @@ document.querySelectorAll<HTMLAnchorElement>(".mt-modal-open").forEach((elm) => 
         }
       });
     } else {
-      modalOpen(elm.href, {});
+      const modalOptions: {
+        large?: boolean;
+      } = {};
+      if ("mtModalLarge" in elm.dataset) {
+        modalOptions["large"] = true;
+      }
+      modalOpen(elm.href, modalOptions);
     }
   });
 });
