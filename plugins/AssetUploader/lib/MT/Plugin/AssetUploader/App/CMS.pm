@@ -16,7 +16,7 @@ use MT::Plugin::AssetUploader qw(plugin);
 
 sub template_param_header {
     my ($cb, $app, $param, $tmpl) = @_;
-    my $plugin      = plugin();
+    my $plugin = plugin();
 
     my $html_head = $tmpl->getElementsByName("html_head")
         or return;
@@ -211,10 +211,30 @@ sub list_props_label_html {
     $obj->label;
 }
 
-sub list_props_description_html {
-    my $prop = shift;
-    my ($obj) = @_;
-    $obj->description;
+sub list_props_tags_bulk_html {
+    my $prop       = shift;
+    my ($objs)     = @_;
+    my @obj_ids    = map { $_->id } @$objs;
+    my @objecttags = MT->model('objecttag')->load({
+        object_datasource => 'asset',
+        object_id         => \@obj_ids,
+    });
+    my %object_id_map = ();
+    my %tag_map       = ();
+    for my $objecttag (@objecttags) {
+        $object_id_map{ $objecttag->object_id } ||= [];
+        push @{ $object_id_map{ $objecttag->object_id } }, $objecttag->tag_id;
+        $tag_map{ $objecttag->tag_id } = 1;
+    }
+    %tag_map = map { $_->id => $_->name } MT->model('tag')->load({
+        id => [keys %tag_map],
+    });
+
+    return map {
+        join(
+            ',',
+            map { $tag_map{$_} } @{ $object_id_map{$_} })
+    } @obj_ids;
 }
 
 sub list_props_url_html {

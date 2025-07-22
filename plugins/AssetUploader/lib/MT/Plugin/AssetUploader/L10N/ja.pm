@@ -34,6 +34,7 @@ use vars qw( %Lexicon );
     'Edit information'                               => '情報を編集',
     'Link to original image'                         => 'オリジナル画像にリンクする',
     'Creating system templates for AssetUploader...' => 'AssetUploaderで利用するシステムテンプレートを作成しています...',
+    'Tags'                                           => 'タグ',
     'Options'                                        => 'オプション',
     'Upload Destination'                             => 'アップロード先',
     'Site Root'                                      => 'サイトパス',
