@@ -202,7 +202,10 @@ sub as_html {
 sub _build_status_message {
     my $app = shift;
 
-    my %param = ();
+    my $blog  = $app->blog;
+    my %param = (
+        blog_id => $blog ? $blog->id : 0,
+    );
     require MT::CMS::Asset;
     MT::CMS::Asset::_check_thumbnail_dir($app, \%param);
     my $message = $app->build_page_in_mem($app->load_tmpl('include/alert_asset_upload.tmpl', \%param))

@@ -54,6 +54,7 @@ subtest 'asset_uploader_site_status' => sub {
             my $result = $app->json;
             ok !defined $result->{error};
             ok defined $result->{result}{message};
+            like $result->{result}{message}, qr/blog_id=@{[$blog->id]}/;
             isnt $result->{result}{message}, '';
         };
 
