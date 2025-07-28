@@ -34,7 +34,7 @@ jobs:
         with:
           repository: movabletype/internal-movabletype
           token: ${{ secrets.FETCH_INTERNAL }}
-          ref: fix/remove-compat_upload_template-3
+          ref: develop9
           path: mt
       - uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567
         with:
