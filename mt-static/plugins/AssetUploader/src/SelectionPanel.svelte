@@ -16,13 +16,15 @@
     options,
     allowUpload,
     uploadOptions: initialUploadOptions,
-    selectMetaData
+    selectMetaData,
+    statusMessage
   }: {
     assetDataStore: AssetDataStore;
     options: Options;
     allowUpload: boolean;
     uploadOptions: UploadOptions;
     selectMetaData: boolean;
+    statusMessage: string;
   } = $props();
 
   uploadOptions.set(initialUploadOptions);
@@ -141,6 +143,9 @@
   <ModalContent bind:close>
     <svelte:fragment slot="title">{window.trans("Insert Image Asset")}</svelte:fragment>
     <svelte:fragment slot="body">
+      {#if statusMessage}
+        <div>{@html statusMessage}</div>
+      {/if}
       <div
         class="position-relative"
         class:mt-asset-uploader-dragging={isDragging}

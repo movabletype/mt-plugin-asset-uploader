@@ -11,7 +11,7 @@ use utf8;
 use File::Spec;
 use JSON;
 
-use MT::Util                  qw(encode_html);
+use MT::Util                  qw(encode_html trim);
 use MT::Plugin::AssetUploader qw(plugin);
 
 sub template_param_header {
@@ -196,6 +196,35 @@ sub as_html {
         assetThumbnailUrl    => $thumbnail_url,
         assetThumbnailWidth  => $thumbnail_width,
         assetThumbnailHeight => $thumbnail_height,
+    });
+}
+
+sub _build_status_message {
+    my $app = shift;
+
+    my $blog  = $app->blog;
+    my %param = (
+        blog_id => $blog ? $blog->id : 0,
+    );
+    require MT::CMS::Asset;
+    MT::CMS::Asset::_check_thumbnail_dir($app, \%param);
+    my $message = $app->build_page_in_mem($app->load_tmpl('include/alert_asset_upload.tmpl', \%param))
+        or return;
+
+    trim($message);
+}
+
+sub site_status {
+    my $app = shift;
+
+    my $message = '';
+    if ($app->blog) {
+        defined($message = _build_status_message($app))
+            or return;
+    }
+
+    return $app->json_result({
+        message => $message,
     });
 }
 
