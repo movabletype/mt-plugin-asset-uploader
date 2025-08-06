@@ -161,7 +161,7 @@
             <div class="row gap-3 gap-md-0 g-5">
               {#if allowUpload}
                 <div class="col-auto">
-                  <input bind:this={fileInput} type="file" multiple class="d-none" />
+                  <input bind:this={fileInput} type="file" multiple class="d-none" accept="image/*" />
                   <button type="button" class="btn btn-default" onclick={() => fileInput?.click()}
                     >{window.trans("Upload")}</button
                   >
