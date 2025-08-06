@@ -10,6 +10,7 @@ schema_version: 1.0001
 applications:
   cms:
     callbacks:
+      MT::App::CMS::init_app: $AssetUploader::MT::Plugin::AssetUploader::App::CMS::init_app
       template_param.header: $AssetUploader::MT::Plugin::AssetUploader::App::CMS::template_param_header
       template_param.edit_content_data: $AssetUploader::MT::Plugin::AssetUploader::App::CMS::template_param_edit_content_data
     methods:

@@ -8,11 +8,40 @@ use strict;
 use warnings;
 use utf8;
 
+use Class::Method::Modifiers qw(install_modifier);
 use File::Spec;
 use JSON;
 
 use MT::Util                  qw(encode_html trim);
 use MT::Plugin::AssetUploader qw(plugin);
+
+my $list_columns = join(',', qw(
+    asset_uploader_blog_id asset_uploader_label class description asset_uploader_tags
+    file_name asset_uploader_url asset_uploader_thumbnail_url image_width image_height
+));
+
+my $app_initialized = 0;
+sub init_app {
+    return if $app_initialized;
+    $app_initialized = 1;
+
+    install_modifier 'MT::App', 'around', 'parse_filtered_list_permission', sub {
+        my $orig = shift;
+        my $self = shift;
+
+        my @res = $self->$orig(@_);
+
+        my $app = MT->instance;
+        if (
+            $app->param('datasource') eq 'asset'
+            && ($app->param('columns') || '') eq $list_columns
+        ) {
+            push @{$res[0]}, 'access_to_insert_asset_list';
+        }
+
+        @res;
+    };
+}
 
 sub template_param_header {
     my ($cb, $app, $param, $tmpl) = @_;
