@@ -170,7 +170,16 @@
               <div class="col-auto">
                 <div class="row g-4">
                   <div class="col">
-                    <input bind:value={searchText} type="search" class="form-control text" />
+                    <input
+                      bind:value={searchText}
+                      type="search"
+                      class="form-control text"
+                      onkeydown={(e) => {
+                        if (e.keyCode === 13) {
+                          search();
+                        }
+                      }}
+                    />
                   </div>
                   <div class="col-auto">
                     <button type="button" class="btn btn-primary" onclick={search}
