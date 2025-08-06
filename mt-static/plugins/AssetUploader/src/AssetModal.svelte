@@ -20,6 +20,7 @@
     params,
     options,
     allowUpload = true,
+    allowEdit = true,
     uploadOptions: _uploadOptions,
     initialSelectedData
   }: {
@@ -30,6 +31,7 @@
     params: Record<string, string>;
     options: Options;
     allowUpload?: boolean;
+    allowEdit?: boolean;
     uploadOptions: Readonly<UploadOptions>;
     initialSelectedData?: InitialSelectedAssetData[];
   } = $props();
@@ -85,6 +87,7 @@
     {assetDataStore}
     {options}
     {allowUpload}
+    {allowEdit}
     {uploadOptions}
     {statusMessage}
   />

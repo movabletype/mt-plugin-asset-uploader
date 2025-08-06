@@ -8,7 +8,10 @@ import { addToObjectAsset } from "./util/objectasset";
 const script = document.querySelector<HTMLScriptElement>("#asset-uploader-script")!;
 const options = JSON.parse(script.dataset.insertOptions || "{}") as Options;
 const uploadOptions = JSON.parse(script.dataset.uploadOptions || "{}") as UploadOptions;
-const canUpload = script.dataset.canUpload === "1";
+const { canUpload, canSave } = JSON.parse(script.dataset.permissions || "{}") as {
+  canUpload: boolean;
+  canSave: boolean;
+};
 const blogId = parseInt(script.dataset.blogId ?? "0");
 const magicToken = script.dataset.magicToken ?? "";
 
@@ -164,7 +167,8 @@ function getInsertContentFieldAsset(fieldId: string): InsertMethod {
           ...opts.options
         },
         uploadOptions,
-        allowUpload: canUpload
+        allowUpload: canUpload,
+        allowEdit: canSave
       }
     });
   }
@@ -186,7 +190,8 @@ window.jQuery.fn.mtModal.open = async (url: string, opts: unknown) => {
         params,
         options,
         uploadOptions,
-        allowUpload: canUpload
+        allowUpload: canUpload,
+        allowEdit: canSave
       }
     });
   } else {
@@ -239,7 +244,8 @@ document.querySelectorAll<HTMLAnchorElement>(".mt-modal-open").forEach((elm) => 
           options,
           uploadOptions,
           initialSelectedData,
-          allowUpload
+          allowUpload,
+          allowEdit: canSave
         }
       });
     } else {

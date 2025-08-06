@@ -70,6 +70,15 @@ sub template_param_header {
                     dirSeparator         => MT::Util::dir_separator,
                 } });
         $tmpl->insertAfter($upload_options, $before);
+
+        my $permissions = $tmpl->createElement(
+            'Var', {
+                name  => $plugin->name . '_permissions',
+                value => {
+                    canUpload => $param->{can_upload}       ? JSON::true() : JSON::false(),
+                    canSave   => $app->can_do('save_asset') ? JSON::true() : JSON::false(),
+                } });
+        $tmpl->insertAfter($permissions, $before);
     }
 }
 

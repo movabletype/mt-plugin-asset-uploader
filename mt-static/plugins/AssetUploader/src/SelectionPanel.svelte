@@ -15,6 +15,7 @@
     assetDataStore,
     options,
     allowUpload,
+    allowEdit,
     uploadOptions: initialUploadOptions,
     selectMetaData,
     statusMessage
@@ -22,6 +23,7 @@
     assetDataStore: AssetDataStore;
     options: Options;
     allowUpload: boolean;
+    allowEdit: boolean;
     uploadOptions: UploadOptions;
     selectMetaData: boolean;
     statusMessage: string;
@@ -311,20 +313,22 @@
                       <div>
                         {asset.asset.width} x {asset.asset.height}
                       </div>
-                      <div>
-                        <button
-                          type="button"
-                          class="btn btn-link fw-normal p-0"
-                          onclick={() => {
-                            editingAsset = {
-                              asset: asset.asset,
-                              label: asset.asset.label,
-                              description: asset.asset.description,
-                              tags: asset.asset.tags
-                            };
-                          }}>{window.trans("Edit information")}</button
-                        >
-                      </div>
+                      {#if allowEdit}
+                        <div>
+                          <button
+                            type="button"
+                            class="btn btn-link fw-normal p-0"
+                            onclick={() => {
+                              editingAsset = {
+                                asset: asset.asset,
+                                label: asset.asset.label,
+                                description: asset.asset.description,
+                                tags: asset.asset.tags
+                              };
+                            }}>{window.trans("Edit information")}</button
+                          >
+                        </div>
+                      {/if}
                     </div>
                   </div>
                   {#if selectMetaData}
