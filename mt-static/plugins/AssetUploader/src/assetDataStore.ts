@@ -323,8 +323,13 @@ export default class AssetDataStore {
       const { width, height } = await new Promise<{ width: number; height: number }>((resolve) => {
         const img = new Image();
         img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
+        img.onerror = () => resolve({ width: 0, height: 0 });
         img.src = url;
       });
+      if (width === 0 && height === 0) {
+        alert(window.trans("Unsupported file type"));
+        continue;
+      }
 
       const uploadPromise = uploadAsset({
         file,
