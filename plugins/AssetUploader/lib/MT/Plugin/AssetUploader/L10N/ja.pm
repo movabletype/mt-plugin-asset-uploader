@@ -25,6 +25,7 @@ use vars qw( %Lexicon );
     'Settings'                                       => '設定',
     'Finish'                                         => '完了',
     'Drop files here'                                => 'ファイルをここにドロップしてください',
+    'Unsupported file type'                          => 'サポートされていないファイル形式です',
     'Align'                                          => '配置',
     'Align left'                                     => '左寄せ',
     'Align center'                                   => '中央寄せ',

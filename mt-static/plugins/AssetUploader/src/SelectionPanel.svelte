@@ -15,6 +15,7 @@
     assetDataStore,
     options,
     allowUpload,
+    allowEdit,
     uploadOptions: initialUploadOptions,
     selectMetaData,
     statusMessage
@@ -22,6 +23,7 @@
     assetDataStore: AssetDataStore;
     options: Options;
     allowUpload: boolean;
+    allowEdit: boolean;
     uploadOptions: UploadOptions;
     selectMetaData: boolean;
     statusMessage: string;
@@ -159,7 +161,13 @@
             <div class="row gap-3 gap-md-0 g-5">
               {#if allowUpload}
                 <div class="col-auto">
-                  <input bind:this={fileInput} type="file" multiple class="d-none" />
+                  <input
+                    bind:this={fileInput}
+                    type="file"
+                    multiple
+                    class="d-none"
+                    accept="image/*"
+                  />
                   <button type="button" class="btn btn-default" onclick={() => fileInput?.click()}
                     >{window.trans("Upload")}</button
                   >
@@ -168,7 +176,16 @@
               <div class="col-auto">
                 <div class="row g-4">
                   <div class="col">
-                    <input bind:value={searchText} type="search" class="form-control text" />
+                    <input
+                      bind:value={searchText}
+                      type="search"
+                      class="form-control text"
+                      onkeydown={(e) => {
+                        if (e.keyCode === 13) {
+                          search();
+                        }
+                      }}
+                    />
                   </div>
                   <div class="col-auto">
                     <button type="button" class="btn btn-primary" onclick={search}
@@ -311,20 +328,22 @@
                       <div>
                         {asset.asset.width} x {asset.asset.height}
                       </div>
-                      <div>
-                        <button
-                          type="button"
-                          class="btn btn-link fw-normal p-0"
-                          onclick={() => {
-                            editingAsset = {
-                              asset: asset.asset,
-                              label: asset.asset.label,
-                              description: asset.asset.description,
-                              tags: asset.asset.tags
-                            };
-                          }}>{window.trans("Edit information")}</button
-                        >
-                      </div>
+                      {#if allowEdit}
+                        <div>
+                          <button
+                            type="button"
+                            class="btn btn-link fw-normal p-0"
+                            onclick={() => {
+                              editingAsset = {
+                                asset: asset.asset,
+                                label: asset.asset.label,
+                                description: asset.asset.description,
+                                tags: asset.asset.tags
+                              };
+                            }}>{window.trans("Edit information")}</button
+                          >
+                        </div>
+                      {/if}
                     </div>
                   </div>
                   {#if selectMetaData}
