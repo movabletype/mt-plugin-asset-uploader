@@ -316,6 +316,18 @@ export default class AssetDataStore {
       return;
     }
 
+    // TODO: In the future, allow uploading to begin without waiting for loading
+    await new Promise<void>((resolve) => {
+      const checkStatus = () => {
+        if (this.status === "loaded") {
+          resolve();
+        } else {
+          setTimeout(checkStatus, 50);
+        }
+      };
+      checkStatus();
+    });
+
     const uploadAsset = await window.MT.import("uploadAsset");
     for (let i = 0; i < files.length; i++) {
       const file = files[i];

@@ -23,6 +23,7 @@ interface AssetUploaderOpenOptions {
   params?: Record<string, string>;
   insert?: (data: Record<string, string>[]) => Promise<void>;
   options?: Partial<Options>;
+  files?: FileList;
 }
 
 interface AssetUploader {
@@ -168,7 +169,8 @@ function getInsertContentFieldAsset(fieldId: string): InsertMethod {
         },
         uploadOptions,
         allowUpload: canUpload,
-        allowEdit: canSave
+        allowEdit: canSave,
+        files: opts.files
       }
     });
   }
