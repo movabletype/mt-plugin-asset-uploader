@@ -247,7 +247,7 @@
                     />
                   </div>
                   <div class="col-auto col-md-7">
-                    <div>
+                    <div class="mt-asset-uploader-insert-options-item-label">
                       {editingAsset.label}
                     </div>
                     <div>
@@ -322,7 +322,7 @@
                       />
                     </div>
                     <div class="col-auto col-md-7">
-                      <div>
+                      <div class="mt-asset-uploader-insert-options-item-label">
                         {asset.asset.label}
                       </div>
                       <div>
@@ -544,6 +544,9 @@
   .mt-asset-uploader-insert-options-item-preview {
     max-height: 100px;
     background: url(data:image/gif;base64,R0lGODlhEAAQAPEBAAAAAL+/v////wAAACH5BAAAAAAALAAAAAAQABAAAAIfjG+iq4jM3IFLJipswNly/XkcBpIiVaInlLJr9FZWAQA7);
+  }
+  .mt-asset-uploader-insert-options-item-label {
+    word-break: break-all;
   }
   .align-button-group .active-align {
     background-color: #e9ecef;
