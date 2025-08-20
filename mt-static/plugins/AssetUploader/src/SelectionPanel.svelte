@@ -505,8 +505,8 @@
     z-index: 10;
   }
   .mt-asset-uploader-asset {
-    width: 133px;
-    height: 133px;
+    width: 25%;
+    aspect-ratio: 1/1;
   }
   .mt-asset-uploader-asset img {
     outline-offset: -3px;
@@ -515,13 +515,6 @@
     width: 100%;
     height: 100%;
     background: url(data:image/gif;base64,R0lGODlhEAAQAPEBAAAAAL+/v////wAAACH5BAAAAAAALAAAAAAQABAAAAIfjG+iq4jM3IFLJipswNly/XkcBpIiVaInlLJr9FZWAQA7);
-  }
-  @media (max-width: 767.98px) {
-    .mt-asset-uploader-asset {
-      width: 25%;
-      height: 25%;
-      aspect-ratio: 1/1;
-    }
   }
   .mt-asset-uploader-asset img.selected {
     outline: 3px solid #0176bf;
