@@ -297,13 +297,20 @@
                       type="button"
                       class="btn btn-outline-primary"
                       disabled={!editingAsset.label}
-                      onclick={() => {
+                      onclick={async () => {
                         Object.assign(editingAsset!.asset, {
                           label: editingAsset!.label,
                           description: editingAsset!.description,
                           tags: editingAsset!.tags
                         });
-                        editingAsset!.asset.save();
+                        try {
+                          const res = await (await editingAsset!.asset.save()).json();
+                          if (res.error) {
+                            throw new Error(res.error);
+                          }
+                        } catch (error) {
+                          alert(error);
+                        }
                         editingAsset = undefined;
                       }}>{window.trans("Finish")}</button
                     >
