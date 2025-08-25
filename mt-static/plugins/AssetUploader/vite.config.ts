@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => {
     base: "./",
     build: {
       rollupOptions: {
-        input: ["src/bootstrap.ts", "src/main.ts"],
+        input: ["src/bootstrap.ts"],
         output: {
           sourcemap: !isProduction,
           format: "esm",
