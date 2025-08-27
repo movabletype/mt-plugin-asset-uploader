@@ -57,6 +57,9 @@ sub template_param_header {
         $html_head_before = $t;
     }
 
+    my $version = $tmpl->createElement('Var', { name => $plugin->name . '_version', value => $plugin->version });
+    $tmpl->insertAfter($version, $html_head_before);
+
     my $js_includes = $tmpl->getElementsByName("js_include")
         or return;
     my $before = $js_includes->[0];
@@ -66,9 +69,6 @@ sub template_param_header {
         $tmpl->insertBefore($t, $before);
         $before = $t;
     }
-
-    my $t = $tmpl->createElement('Var', { name => $plugin->name . '_version', value => $plugin->version });
-    $tmpl->insertAfter($t, $before);
 
     if (my $blog = $app->blog) {
         my $blog_id = $tmpl->createElement('Var', { name => $plugin->name . '_blog_id', value => $blog->id });

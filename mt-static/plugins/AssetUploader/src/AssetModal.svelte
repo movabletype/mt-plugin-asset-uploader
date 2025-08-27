@@ -22,7 +22,8 @@
     allowUpload = true,
     allowEdit = true,
     uploadOptions: _uploadOptions,
-    initialSelectedData
+    initialSelectedData,
+    files
   }: {
     blogId: number;
     insert: InsertMethod;
@@ -34,6 +35,7 @@
     allowEdit?: boolean;
     uploadOptions: Readonly<UploadOptions>;
     initialSelectedData?: InitialSelectedAssetData[];
+    files?: FileList;
   } = $props();
 
   const uploadOptions: UploadOptions = { ..._uploadOptions };
@@ -79,6 +81,7 @@
     options,
     initialSelectedData
   });
+  assetDataStore.upload(files, uploadOptions);
 </script>
 
 <Modal id="mt-asset-uploader-modal" size="lg" on:close={close} bind:this={self}>
