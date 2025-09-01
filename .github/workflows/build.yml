@@ -50,13 +50,3 @@ jobs:
           files: |
             *.zip
             *.tar.gz
-
-      - name: Upload extenstion package to GitHub Releases
-        if: ${{ steps.vars.outputs.extension_name }}
-        uses: softprops/action-gh-release@v2
-        with:
-          draft: true
-          make_latest: "false"
-          files: |
-            extensions/${{ steps.vars.outputs.extension_name }}/*.zip
-            extensions/${{ steps.vars.outputs.extension_name }}/*.tar.gz
