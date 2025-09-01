@@ -51,7 +51,7 @@ sub template_param_header {
         or return;
     my $html_head_before = $html_head->[0];
 
-    my $app_dist_tokens = $plugin->load_tmpl("app_dist.tmpl")->tokens;
+    my $app_dist_tokens = $plugin->load_tmpl("asset_uploader_app_dist.tmpl")->tokens;
     foreach my $t (@$app_dist_tokens) {
         $tmpl->insertBefore($t, $html_head_before);
         $html_head_before = $t;
@@ -64,7 +64,7 @@ sub template_param_header {
         or return;
     my $before = $js_includes->[0];
 
-    my $tokens = $plugin->load_tmpl("header.tmpl")->tokens;
+    my $tokens = $plugin->load_tmpl("asset_uploader_header.tmpl")->tokens;
     foreach my $t (@$tokens) {
         $tmpl->insertBefore($t, $before);
         $before = $t;
