@@ -12,6 +12,8 @@ concurrency:
 
 jobs:
   node:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,6 +28,9 @@ jobs:
         run: npm run test
 
   perl:
+    permissions:
+      contents: read
+      packages: read
     runs-on: ubuntu-latest
 
     steps:
